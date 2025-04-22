@@ -1,0 +1,52 @@
+﻿@page "/"
+
+<PageTitle>Главный экран</PageTitle>
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using МоиФинансы.Components.Shared.Models
+
+
+
+<div class="container mt-5">
+    <h2 class="text-center">Последние транзакции</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Дата</th>
+                    <th>Категория</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                @* Здесь будет код для динамического заполнения таблицы *@
+                <tr>
+                    @* Пример строки для демонстрации *@
+                    <td>2024-07-25</td>
+                    <td>Продукты</td>
+                    <td>1500 ₽</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .recent-transactions {
+        width: 80%;
+    @* Устанавливаем ширину таблицы *@
+        margin: 0 auto;
+    @* Центрируем таблицу *@
+    }
+</style>
+
+@code {
+    // private List<TransactionDto> transactions;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     // Замените на API-метод для получения транзакций
+    //     transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("api/transactions");
+    // }
+}

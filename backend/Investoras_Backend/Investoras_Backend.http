@@ -1,0 +1,6 @@
+@Investoras_Backend_HostAddress = http://localhost:5232
+
+GET {{Investoras_Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

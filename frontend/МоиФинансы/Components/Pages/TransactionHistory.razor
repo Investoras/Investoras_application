@@ -1,0 +1,123 @@
+﻿@page "/history"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using МоиФинансы.Components.Shared.Models
+
+<div class="transaction-history">
+    <h2>История транзакций</h2>
+    <div class="filters">
+        <div class="filter-group">
+            <label>Дата:</label>
+            <select @bind="dateFilter">
+                <option value="7">Неделя</option>
+                <option value="30">Месяц</option>
+                <option value="365">Год</option>
+                <option value="0">Все</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Тип:</label>
+            <select @bind="typeFilter">
+                <option value="All">Все</option>
+                <option value="Income">Доходы</option>
+                <option value="Expense">Расходы</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Категория:</label>
+            <select @bind="categoryFilter">
+                <option value="All">Все</option>
+                @foreach (var cat in Categories)
+                {
+                    <option value="@cat.Id">@cat.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <table class="transactions-table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Категория</th>
+                <th>Описание</th>
+                <th>Сумма</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in FilteredTransactions)
+            {
+                <tr class="@(t.IsIncome ? "income" : "expense")">
+                    <td>@t.Date.ToShortDateString()</td>
+                    <td>@t.CategoryName</td>
+                    <td>@t.Description</td>
+                    <td>@(t.IsIncome ? "+" : "-") @t.Amount.ToString("C")</td>
+                    <td>
+                        <button @onclick="() => EditTransaction(t.Id)">✏️</button>
+                        <button @onclick="() => DeleteTransaction(t.Id)">🗑</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pagination">
+        <button @onclick="PrevPage" :disabled="currentPage == 1">←</button>
+        <span>Страница @currentPage</span>
+        <button @onclick="NextPage">→</button>
+    </div>
+</div>
+
+@code {
+    private List<TransactionDto> AllTransactions = new();
+    private List<TransactionDto> FilteredTransactions = new();
+    private List<CategoryDto> Categories = new();
+    private string dateFilter = "30";
+    private string typeFilter = "All";
+    private string categoryFilter = "All";
+    private int currentPage = 1;
+    private const int PageSize = 10;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+    private async Task LoadData()
+    {
+        AllTransactions = await Http.GetFromJsonAsync<List<TransactionDto>>
+        ("api/transactions");
+        Categories = await Http.GetFromJsonAsync<List<CategoryDto>>("api/categories");
+        ApplyFilters();
+    }
+    private void ApplyFilters()
+    {
+        var query = AllTransactions.AsQueryable();
+        if (dateFilter != "0")
+        {
+            var days = int.Parse(dateFilter);
+            query = query.Where(t => t.Date >= DateTime.Now.AddDays(-days));
+        }
+        if (typeFilter != "All")
+        {
+            query = query.Where(t => t.IsIncome == (typeFilter == "Income"));
+        }
+        if (categoryFilter != "All")
+        {
+            var catId = int.Parse(categoryFilter);
+            query = query.Where(t => t.CategoryId == catId);
+        }
+        FilteredTransactions = query
+        .Skip((currentPage - 1) * PageSize)
+        .Take(PageSize)
+        .ToList();
+    }
+    private void NextPage() { currentPage++; ApplyFilters(); }
+    private void PrevPage() { if (currentPage > 1) currentPage--; ApplyFilters(); }
+    private async Task DeleteTransaction(int id)
+    {
+        await Http.DeleteAsync($"api/transactions/{id}");
+        await LoadData();
+    }
+    private void EditTransaction(int id)
+    {
+        Navigation.NavigateTo($"/edit-transaction/{id}");
+    }
+}
