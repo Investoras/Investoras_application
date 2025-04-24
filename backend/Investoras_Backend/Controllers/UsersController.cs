@@ -1,8 +1,10 @@
 ﻿using Investoras_Backend.Data;
-using Investoras_Backend.Models;
-using Investoras_Backend.Models.Updaters;
+using Investoras_Backend.Data.Dto;
+using Investoras_Backend.Data.Entities;
+using Investoras_Backend.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Investoras_Backend.Controllers;
@@ -11,65 +13,58 @@ namespace Investoras_Backend.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly ApplicationDbContext dbContext;
+    private IUserService _userService;
 
-    public UsersController(ApplicationDbContext dbContext)
+    public UsersController(IUserService userService)
     {
-        this.dbContext = dbContext;
+        _userService = userService;
     }
-    [HttpGet]
-    public IActionResult GetAllUsers()
+    [HttpGet("All")]
+    public async Task<ActionResult> GetAllUsers(CancellationToken cancellationToken)
     {
-        var allUsers = dbContext.Users.ToList();
+        var allUsers = await _userService.GetAllUsers(cancellationToken);
         return Ok(allUsers);
     }
-    [HttpPost]
-    public IActionResult AddUser(UpdateUser AddUser)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserById(int id, CancellationToken cancellationToken)
     {
-        var user = new User()
-        {
-            Username = AddUser.Username,
-            Email = AddUser.Email,
-            Password = AddUser.Password,
-            CreatedAt = DateTime.UtcNow
-        };
-
-
-        dbContext.Users.Add(user);
-        dbContext.SaveChanges();
+        var user = await _userService.GetUserById(id, cancellationToken);
+        if (user == null) return NotFound();
         return Ok(user);
+    }
+    [HttpPost]
+    public async Task<IActionResult> AddUser(CreateUserDto userDto, CancellationToken cancellationToken)
+    {
+        var user = await _userService.CreateUser(userDto, cancellationToken);
+        return CreatedAtAction(nameof(GetUserById), new { id = user.UserId }, user);
     }
     [HttpPut]
     [Route("{id:int}")]
-    public IActionResult UpdateUser(int id, UpdateUser UpdateUser)
+    public async Task<IActionResult> UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken)
     {
-        var user = dbContext.Users.Find(id);
-        if (user == null)
+        try
         {
-            return NotFound();
+            await _userService.UpdateUser(id, userDto, cancellationToken);
+            return NoContent();
         }
-
-        user.Username = UpdateUser.Username;
-        user.Password = UpdateUser.Password;
-        user.Email = UpdateUser.Email;
-        user.CreatedAt = DateTime.UtcNow;
-        dbContext.SaveChanges();
-        return Ok(user);
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
     [HttpDelete]
     [Route("{id:int}")]
-    public IActionResult DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(int id, CancellationToken cancellationToken)
     {
-        var user = dbContext.Users.Find(id);
-
-        if (user == null)
+        try
         {
-            return NotFound();
+            await _userService.DeleteUser(id, cancellationToken);
+            return NoContent();
         }
-
-        dbContext.Users.Remove(user);
-        dbContext.SaveChanges();
-        return Ok();
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }
 

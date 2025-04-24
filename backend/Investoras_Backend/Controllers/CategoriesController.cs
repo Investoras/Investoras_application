@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Investoras_Backend.Data;
-using Investoras_Backend.Models;
-using Investoras_Backend.Models.Updaters;
+using Investoras_Backend.Data.Entities;
 using static System.Net.Mime.MediaTypeNames;
+using Investoras_Backend.Data.Dto;
 
 namespace Investoras_Backend.Controllers
 {
@@ -26,7 +26,7 @@ namespace Investoras_Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCategory(UpdateCategory AddCategory)
+        public IActionResult AddCategory(CategoryDto AddCategory)
         {
             var category = new Category()
             {
@@ -42,7 +42,7 @@ namespace Investoras_Backend.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public IActionResult UpdateCategory(int id, UpdateCategory UpdateCategory)
+        public IActionResult UpdateCategory(int id, CategoryDto UpdateCategory)
         {
             var category = dbContext.Categories.Find(id);
 

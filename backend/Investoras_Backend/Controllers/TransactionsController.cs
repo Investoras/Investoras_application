@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Investoras_Backend.Data;
-using Investoras_Backend.Models;
-using Investoras_Backend.Models.Updaters;
+using Investoras_Backend.Data.Entities;
 using static System.Net.Mime.MediaTypeNames;
+using Investoras_Backend.Data.Dto;
 
 namespace Investoras_Backend.Controllers
 {
@@ -26,7 +26,7 @@ namespace Investoras_Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTransaction(UpdateTransaction AddTransaction)
+        public IActionResult AddTransaction(TransactionDto AddTransaction)
         {
             var transaction = new Transaction()
             {
@@ -43,7 +43,7 @@ namespace Investoras_Backend.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public IActionResult UpdateTransaction(int id, UpdateTransaction UpdateTransaction)
+        public IActionResult UpdateTransaction(int id, TransactionDto UpdateTransaction)
         {
             var transaction = dbContext.Transactions.Find(id);
 

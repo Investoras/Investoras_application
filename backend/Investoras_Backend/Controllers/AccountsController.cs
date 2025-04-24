@@ -1,9 +1,10 @@
 ﻿using Investoras_Backend.Data;
-using Investoras_Backend.Models;
-using Investoras_Backend.Models.Updaters;
+using Investoras_Backend.Data.Entities;
+using Investoras_Backend.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
+using Investoras_Backend.Data.Dto;
 
 namespace Investoras_Backend.Controllers;
 
@@ -24,7 +25,7 @@ public class AccountsController : ControllerBase
         return Ok(allAccounts);
     }
     [HttpPost]
-    public IActionResult AddAccount(UpdateAccount AddAccount)
+    public IActionResult AddAccount(AccountDto AddAccount)
     {
         var account = new Account()
         {
@@ -41,7 +42,7 @@ public class AccountsController : ControllerBase
     }
     [HttpPut]
     [Route("{id:int}")]
-    public IActionResult UpdateAccount(int id, UpdateAccount UpdateAccount)
+    public IActionResult UpdateAccount(int id, AccountDto UpdateAccount)
     {
         var account = dbContext.Accounts.Find(id);
         if (account == null)

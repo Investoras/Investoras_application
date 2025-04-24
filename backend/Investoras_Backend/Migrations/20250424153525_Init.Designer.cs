@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Investoras_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250411202619_Init")]
+    [Migration("20250424153525_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Investoras_Backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Investoras_Backend.Models.Account", b =>
+            modelBuilder.Entity("Investoras_Backend.Data.Entities.Account", b =>
                 {
                     b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
@@ -48,10 +48,12 @@ namespace Investoras_Backend.Migrations
 
                     b.HasKey("AccountId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("Investoras_Backend.Models.Category", b =>
+            modelBuilder.Entity("Investoras_Backend.Data.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -75,7 +77,7 @@ namespace Investoras_Backend.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Investoras_Backend.Models.Transaction", b =>
+            modelBuilder.Entity("Investoras_Backend.Data.Entities.Transaction", b =>
                 {
                     b.Property<int>("TransactionId")
                         .ValueGeneratedOnAdd()
@@ -86,8 +88,8 @@ namespace Investoras_Backend.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("integer");
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
@@ -101,10 +103,14 @@ namespace Investoras_Backend.Migrations
 
                     b.HasKey("TransactionId");
 
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Investoras_Backend.Models.User", b =>
+            modelBuilder.Entity("Investoras_Backend.Data.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -130,6 +136,36 @@ namespace Investoras_Backend.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Investoras_Backend.Data.Entities.Account", b =>
+                {
+                    b.HasOne("Investoras_Backend.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Investoras_Backend.Data.Entities.Transaction", b =>
+                {
+                    b.HasOne("Investoras_Backend.Data.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Investoras_Backend.Data.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
