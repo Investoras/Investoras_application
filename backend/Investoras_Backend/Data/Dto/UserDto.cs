@@ -20,8 +20,8 @@ public record CreateUserDto(
     string Email,
 
     [Required(ErrorMessage = "Задайте пароль.")]
-    [StringLength(20, ErrorMessage = "Пароль должен содержать не менее 6 символов, хотя бы одну заглавную латинскую букву, цифру и специальные символы @,$,!,%,*,?,&.", MinimumLength = 6)]
-    [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$")]
+    [StringLength(20, ErrorMessage = "Пароль должен содержать не менее 6 символов.", MinimumLength = 6)]
+    [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$", ErrorMessage = "Пароль должен содержать не менее 6 символов, хотя бы одну заглавную латинскую букву, цифру и специальные символы @,$,!,%,*,?,&.")]
     string Password,
     DateTime CreatedAt
     );
@@ -36,8 +36,8 @@ public record UpdateUserDto(
     string Email,
 
     [Required(ErrorMessage = "Задайте пароль.")]
-    [StringLength(20, ErrorMessage = "Пароль должен содержать не менее 6 символов, хотя бы одну заглавную латинскую букву, цифру и специальные символы @,$,!,%,*,?,&.", MinimumLength = 6)]
-    [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$")]
+    [StringLength(20, ErrorMessage = "Пароль должен содержать не менее 6 символов.", MinimumLength = 6)]
+    [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$", ErrorMessage = "Пароль должен содержать не менее 6 символов, хотя бы одну заглавную латинскую букву, цифру и специальные символы @,$,!,%,*,?,&.")]
     string Password,
     DateTime CreatedAt
     );
