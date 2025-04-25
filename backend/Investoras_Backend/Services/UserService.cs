@@ -28,16 +28,16 @@ public class UserService : IUserService
     {
         var user = _mapper.Map<User>(userDto);
         _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<UserDto>(user);
     }
 
     public async Task DeleteUser(int id, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null) throw new NotFoundException("Product not found");
+        var user = await _context.Users.FindAsync(id, cancellationToken);
+        if (user == null) throw new NotFoundException("User not found");
         _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<UserDto>> GetAllUsers(CancellationToken cancellationToken)
@@ -48,16 +48,16 @@ public class UserService : IUserService
 
     public async Task<UserDto> GetUserById(int id, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = await _context.Users.FindAsync(id, cancellationToken);
         return _mapper.Map<UserDto>(user);
     }
 
     public async Task UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null) throw new NotFoundException("Product not found");
+        var user = await _context.Users.FindAsync(id, cancellationToken);
+        if (user == null) throw new NotFoundException("User not found");
 
         _mapper.Map(userDto, user);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
