@@ -1,0 +1,98 @@
+﻿@page "/Users/UpdateUser/{Id:int}"
+@using System.Text.Json.Nodes
+@using Models.Dto
+@using Models
+
+<div class="row">
+	<div class="col-lg-8">
+		<h1 class="mb-5">Update</h1>
+
+		@if (user == null)
+		{
+			<p><em>Loading ...</em></p>
+		}
+		else
+		{
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">UserName</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="userData.Username" />
+				</div>
+			</div>
+
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">Email</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="userData.Email" />
+				</div>
+			</div>
+
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">Password</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="userData.Password" />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="offset-md-4 row-cols-md-4 d-grid">
+					<button class="btn btn-primary" @onclick="SaveUser">Submit</button>
+
+				</div>
+				<div class="col-md-4 d-grid">
+					<a class="btn btn-outline-primary" href="/Users">Cancel</a>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
+@inject HttpClient Http
+@inject NavigationManager navManager
+@code {
+	[Parameter]
+	public int Id { set; get; }
+	public User user = null;
+	public UserDto userData { set; get; } = new();
+	public JsonNode Errors { set; get; } = new JsonObject();
+
+	protected override async Task OnParametersSetAsync()
+	{
+		try
+		{
+			user = await Http.GetFromJsonAsync<User>("https://localhost:7214/User/" + Id);
+			userData.Username = user?.Username;
+			userData.Email = user.Email;
+			userData.Password = user.Password;
+			userData.CreatedAt = DateTime.UtcNow;
+		}
+		catch(Exception ex)
+		{
+			Console.WriteLine("Exception: " + ex.Message);
+		}
+	}
+
+	protected async Task SaveUser()
+	{
+		var response = await Http.PutAsJsonAsync("https://localhost:7214/User/" + Id, userData);
+		if (response.IsSuccessStatusCode)
+		{
+			navManager.NavigateTo("/Users");
+		}
+		else
+		{
+			var strResponse = await response.Content.ReadAsStringAsync();
+			try
+			{
+				var jsonResponse = JsonNode.Parse(strResponse);
+				Errors = jsonResponse?["errors"] ?? new JsonObject();
+
+			}
+			catch(Exception ex)
+			{
+				
+			}
+		}
+
+	}
+}
