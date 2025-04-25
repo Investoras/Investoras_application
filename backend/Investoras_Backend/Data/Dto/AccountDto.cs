@@ -1,6 +1,4 @@
-﻿using Investoras_Backend.Data.Entities;
-
-namespace Investoras_Backend.Data.Dto;
+﻿namespace Investoras_Backend.Data.Dto;
 
 public record AccountDto(
     int AccountId,

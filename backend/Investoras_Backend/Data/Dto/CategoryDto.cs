@@ -4,7 +4,7 @@ public record CategoryDto(
     int CategoryId,
     string Name,
     bool IsIncome,
-    string Description 
+    string Description
     );
 public record CreateCategoryDto(
     string Name,

@@ -2,12 +2,8 @@
 using Investoras_Backend.Data;
 using Investoras_Backend.Data.Dto;
 using Investoras_Backend.Data.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Errors.Model;
-using System;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Investoras_Backend.Services;
 

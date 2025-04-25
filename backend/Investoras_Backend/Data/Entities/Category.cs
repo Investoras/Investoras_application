@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Transactions;
 
 namespace Investoras_Backend.Data.Entities
 {

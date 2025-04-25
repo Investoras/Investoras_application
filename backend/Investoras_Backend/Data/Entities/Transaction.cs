@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Investoras_Backend.Data.Entities
 {
@@ -12,8 +11,8 @@ namespace Investoras_Backend.Data.Entities
         public string Description { get; set; }
 
         public int AccountId { get; set; }
-        public Account Account{ get; set; }
+        public Account Account { get; set; }
         public int CategoryId { get; set; }
-        public Category Category{ get; set; }
+        public Category Category { get; set; }
     }
 }

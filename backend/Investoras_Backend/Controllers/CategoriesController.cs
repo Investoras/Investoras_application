@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Investoras_Backend.Data;
-using Investoras_Backend.Data.Entities;
-using static System.Net.Mime.MediaTypeNames;
-using Investoras_Backend.Data.Dto;
+﻿using Investoras_Backend.Data.Dto;
 using Investoras_Backend.Services;
+using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
 namespace Investoras_Backend.Controllers;

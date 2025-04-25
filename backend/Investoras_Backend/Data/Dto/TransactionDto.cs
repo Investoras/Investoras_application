@@ -1,7 +1,4 @@
-﻿using Investoras_Backend.Data.Entities;
-using System.Security.Cryptography.X509Certificates;
-
-namespace Investoras_Backend.Data.Dto;
+﻿namespace Investoras_Backend.Data.Dto;
 
 public record TransactionDto(
     int TransactionId,

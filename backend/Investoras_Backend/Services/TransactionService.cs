@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using Investoras_Backend.Data;
 using Investoras_Backend.Data.Dto;
 using Investoras_Backend.Data.Entities;
-using Investoras_Backend.Data;
-using SendGrid.Helpers.Errors.Model;
 using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Errors.Model;
 
 namespace Investoras_Backend.Services;
 

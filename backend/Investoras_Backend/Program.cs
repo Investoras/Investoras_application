@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Investoras_Backend;
 using Investoras_Backend.Data;
 using Investoras_Backend.Services;
-using Investoras_Backend;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
