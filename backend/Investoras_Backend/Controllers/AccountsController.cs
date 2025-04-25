@@ -7,11 +7,11 @@ namespace Investoras_Backend.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class AccountsController : ControllerBase
+public class AccountController : ControllerBase
 {
     private IAccountService _accountService;
 
-    public AccountsController(IAccountService accountService)
+    public AccountController(IAccountService accountService)
     {
         _accountService = accountService;
     }
