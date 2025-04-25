@@ -25,7 +25,7 @@ public record CreateTransactionDto(
     int CategoryId
     );
 
-public record UpdateDto(
+public record UpdateTransactionDto(
     [Required(ErrorMessage = "Введите сумму.")]
     [Range(0.01, double.MaxValue, ErrorMessage = "Сумма должна быть больше 0.")]
     decimal Amount,
