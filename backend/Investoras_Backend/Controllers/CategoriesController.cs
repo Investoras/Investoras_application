@@ -4,71 +4,66 @@ using Investoras_Backend.Data;
 using Investoras_Backend.Data.Entities;
 using static System.Net.Mime.MediaTypeNames;
 using Investoras_Backend.Data.Dto;
+using Investoras_Backend.Services;
+using SendGrid.Helpers.Errors.Model;
 
-namespace Investoras_Backend.Controllers
+namespace Investoras_Backend.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class CategoryController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class CategoriesController : ControllerBase
+    private ICategoryService _categoryService;
+
+    public CategoryController(ICategoryService categoryService)
     {
-        private readonly ApplicationDbContext dbContext;
-
-        public CategoriesController(ApplicationDbContext dbContext)
+        _categoryService = categoryService;
+    }
+    [HttpGet("All")]
+    public async Task<ActionResult> GetAllCategories(CancellationToken cancellationToken)
+    {
+        var allCategories = await _categoryService.GetAllCategories(cancellationToken);
+        return Ok(allCategories);
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCategoryById(int id, CancellationToken cancellationToken)
+    {
+        var category = await _categoryService.GetCategoryById(id, cancellationToken);
+        if (category == null) return NotFound();
+        return Ok(category);
+    }
+    [HttpPost]
+    public async Task<IActionResult> AddCategory(CreateCategoryDto categoryDto, CancellationToken cancellationToken)
+    {
+        var category = await _categoryService.CreateCategory(categoryDto, cancellationToken);
+        return CreatedAtAction(nameof(GetCategoryById), new { id = category.CategoryId }, category);
+    }
+    [HttpPut]
+    [Route("{id:int}")]
+    public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto categoryDto, CancellationToken cancellationToken)
+    {
+        try
         {
-            this.dbContext = dbContext;
+            await _categoryService.UpdateCategory(id, categoryDto, cancellationToken);
+            return NoContent();
         }
-
-        [HttpGet]
-        public IActionResult GetAllCategories()
+        catch (NotFoundException ex)
         {
-            var categories = dbContext.Categories;
-            return Ok(categories);
+            return NotFound(ex.Message);
         }
-
-        [HttpPost]
-        public IActionResult AddCategory(CategoryDto AddCategory)
+    }
+    [HttpDelete]
+    [Route("{id:int}")]
+    public async Task<IActionResult> DeleteCategory(int id, CancellationToken cancellationToken)
+    {
+        try
         {
-            var category = new Category()
-            {
-                Name = AddCategory.Name,
-                IsIncome = AddCategory.IsIncome,
-                Description = AddCategory.Description
-            };
-
-            dbContext.Categories.Add(category);
-            dbContext.SaveChanges();
-            return Ok(category);
+            await _categoryService.DeleteCategory(id, cancellationToken);
+            return NoContent();
         }
-
-        [HttpPut]
-        [Route("{id:int}")]
-        public IActionResult UpdateCategory(int id, CategoryDto UpdateCategory)
+        catch (NotFoundException ex)
         {
-            var category = dbContext.Categories.Find(id);
-
-            if (category == null)
-                return NotFound();
-
-            category.Description = UpdateCategory.Description;
-            category.Name = UpdateCategory.Name;
-            category.IsIncome = UpdateCategory.IsIncome;
-            
-            dbContext.SaveChanges();
-            return Ok(category);
-        }
-
-        [HttpDelete]
-        [Route("{id:int}")]
-        public IActionResult DeleteCategory(int id)
-        {
-            var category = dbContext.Categories.Find(id);
-
-            if (category == null)
-                return NotFound();
-
-            dbContext.Categories.Remove(category);
-            dbContext.SaveChanges();
-            return Ok();
+            return NotFound(ex.Message);
         }
     }
 }

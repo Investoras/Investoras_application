@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
 using Investoras_Backend.Data.Dto;
+using Investoras_Backend.Services;
+using SendGrid.Helpers.Errors.Model;
 
 namespace Investoras_Backend.Controllers;
 
@@ -12,64 +14,57 @@ namespace Investoras_Backend.Controllers;
 [ApiController]
 public class AccountsController : ControllerBase
 {
-    private readonly ApplicationDbContext dbContext;
+    private IAccountService _accountService;
 
-    public AccountsController(ApplicationDbContext dbContext)
+    public AccountsController(IAccountService accountService)
     {
-        this.dbContext = dbContext;
+        _accountService = accountService;
     }
-    [HttpGet]
-    public IActionResult GetAllAccounts()
+    [HttpGet("All")]
+    public async Task<ActionResult> GetAllAccounts(CancellationToken cancellationToken)
     {
-        var allAccounts = dbContext.Accounts.ToList();
+        var allAccounts = await _accountService.GetAllAccounts(cancellationToken);
         return Ok(allAccounts);
     }
-    [HttpPost]
-    public IActionResult AddAccount(AccountDto AddAccount)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAccountById(int id, CancellationToken cancellationToken)
     {
-        var account = new Account()
-        {
-            Name = AddAccount.Name,
-            Balance = AddAccount.Balance,
-            UserId = AddAccount.UserId,
-            CreatedAt = DateTime.UtcNow
-        };
-
-
-        dbContext.Accounts.Add(account);
-        dbContext.SaveChanges();
+        var account = await _accountService.GetAccountById(id, cancellationToken);
+        if (account == null) return NotFound();
         return Ok(account);
+    }
+    [HttpPost]
+    public async Task<IActionResult> AddAccount(CreateAccountDto accountDto, CancellationToken cancellationToken)
+    {
+        var account = await _accountService.CreateAccount(accountDto, cancellationToken);
+        return CreatedAtAction(nameof(GetAccountById), new { id = account.AccountId }, account);
     }
     [HttpPut]
     [Route("{id:int}")]
-    public IActionResult UpdateAccount(int id, AccountDto UpdateAccount)
+    public async Task<IActionResult> UpdateAccount(int id, UpdateAccountDto accountDto, CancellationToken cancellationToken)
     {
-        var account = dbContext.Accounts.Find(id);
-        if (account == null)
+        try
         {
-            return NotFound();
+            await _accountService.UpdateAccount(id, accountDto, cancellationToken);
+            return NoContent();
         }
-
-        account.Name = UpdateAccount.Name;
-        account.Balance = UpdateAccount.Balance;
-        account.UserId = UpdateAccount.UserId;
-        account.CreatedAt = DateTime.UtcNow;
-        dbContext.SaveChanges();
-        return Ok(account);
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
     [HttpDelete]
     [Route("{id:int}")]
-    public IActionResult DeleteAccount(int id)
+    public async Task<IActionResult> DeleteAccount(int id, CancellationToken cancellationToken)
     {
-        var account = dbContext.Accounts.Find(id);
-
-        if (account == null)
+        try
         {
-            return NotFound();
+            await _accountService.DeleteAccount(id, cancellationToken);
+            return NoContent();
         }
-
-        dbContext.Accounts.Remove(account);
-        dbContext.SaveChanges();
-        return Ok();
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

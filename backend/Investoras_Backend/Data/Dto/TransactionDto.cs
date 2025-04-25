@@ -16,7 +16,7 @@ public record CreateTransactionDto(
     int AccountId,
     int CategoryId
     );
-public record UpdateDto(
+public record UpdateTransactionDto(
     decimal Amount,
     string Description,
     int AccountId,

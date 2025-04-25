@@ -10,11 +10,19 @@ public class MappingProfile : Profile
     {
         // Добавьте это отображение
         CreateMap<CreateUserDto, User>();
-
-        // Другие отображения, если они есть
+        CreateMap<UpdateUserDto, User>();
         CreateMap<User, UserDto>();
 
-        CreateMap<UpdateUserDto, User>();
-        // ... другие маппинги
+        CreateMap<CreateTransactionDto, Transaction>();
+        CreateMap<UpdateTransactionDto, Transaction>();
+        CreateMap<Transaction, TransactionDto>();
+
+        CreateMap<CreateAccountDto, Account>();
+        CreateMap<UpdateAccountDto, Account>();
+        CreateMap<Account, AccountDto>();
+
+        CreateMap<CreateCategoryDto, Category>();
+        CreateMap<UpdateCategoryDto, Category>();
+        CreateMap<Category, CategoryDto>();
     }
 }

@@ -1,76 +1,65 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Investoras_Backend.Data.Dto;
+using Investoras_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
-using Investoras_Backend.Data;
-using Investoras_Backend.Data.Entities;
-using static System.Net.Mime.MediaTypeNames;
-using Investoras_Backend.Data.Dto;
+using SendGrid.Helpers.Errors.Model;
 
-namespace Investoras_Backend.Controllers
+namespace Investoras_Backend.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class TransactionController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class TransactionsController : ControllerBase
+    private ITransactionService _transactionService;
+
+    public TransactionController(ITransactionService userService)
     {
-        private readonly ApplicationDbContext dbContext;
-
-        public TransactionsController(ApplicationDbContext dbContext)
+        _transactionService = userService;
+    }
+    [HttpGet("All")]
+    public async Task<ActionResult> GetAllTransactions(CancellationToken cancellationToken)
+    {
+        var allTransactions = await _transactionService.GetAllTransactions(cancellationToken);
+        return Ok(allTransactions);
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetTransactionById(int id, CancellationToken cancellationToken)
+    {
+        var transaction = await _transactionService.GetTransactionById(id, cancellationToken);
+        if (transaction == null) return NotFound();
+        return Ok(transaction);
+    }
+    [HttpPost]
+    public async Task<IActionResult> AddTransaction(CreateTransactionDto transactionDto, CancellationToken cancellationToken)
+    {
+        var transaction = await _transactionService.CreateTransaction(transactionDto, cancellationToken);
+        return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.TransactionId }, transaction);
+    }
+    [HttpPut]
+    [Route("{id:int}")]
+    public async Task<IActionResult> UpdateTransaction(int id, UpdateTransactionDto transactionDto, CancellationToken cancellationToken)
+    {
+        try
         {
-            this.dbContext = dbContext;
+            await _transactionService.UpdateTransaction(id, transactionDto, cancellationToken);
+            return NoContent();
         }
-
-        [HttpGet]
-        public IActionResult GetTransactions()
+        catch (NotFoundException ex)
         {
-            var transactions = dbContext.Transactions.ToList();
-            return Ok(transactions);
+            return NotFound(ex.Message);
         }
-
-        [HttpPost]
-        public IActionResult AddTransaction(TransactionDto AddTransaction)
+    }
+    [HttpDelete]
+    [Route("{id:int}")]
+    public async Task<IActionResult> DeleteTransaction(int id, CancellationToken cancellationToken)
+    {
+        try
         {
-            var transaction = new Transaction()
-            {
-                Date = DateTime.UtcNow,
-                Amount = AddTransaction.Amount,
-                Description = AddTransaction.Description,
-                CategoryId = AddTransaction.CategoryId
-            };
-
-            dbContext.Transactions.Add(transaction);
-            dbContext.SaveChanges();
-            return Ok(transaction);
+            await _transactionService.DeleteTransaction(id, cancellationToken);
+            return NoContent();
         }
-
-        [HttpPut]
-        [Route("{id:int}")]
-        public IActionResult UpdateTransaction(int id, TransactionDto UpdateTransaction)
+        catch (NotFoundException ex)
         {
-            var transaction = dbContext.Transactions.Find(id);
-
-            if (transaction == null)
-                return NotFound();
-
-            transaction.Description = UpdateTransaction.Description;
-            transaction.CategoryId = UpdateTransaction.CategoryId;
-            transaction.Amount = UpdateTransaction.Amount;
-            transaction.Date = DateTime.UtcNow;
-
-            dbContext.SaveChanges();
-            return Ok(transaction);
-        }
-
-        [HttpDelete]
-        [Route("{id:int}")]
-        public IActionResult DeleteTransaction(int id)
-        {
-            var transaction = dbContext.Transactions.Find(id);
-
-            if (transaction == null)
-                return NotFound();
-
-            dbContext.Transactions.Remove(transaction);
-            dbContext.SaveChanges();
-            return Ok();
+            return NotFound(ex.Message);
         }
     }
 }

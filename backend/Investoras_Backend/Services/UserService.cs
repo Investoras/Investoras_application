@@ -58,10 +58,10 @@ public class UserService : IUserService
 
     public async Task UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken)
     {
-        var product = await _context.Users.FindAsync(id);
-        if (product == null) throw new NotFoundException("Product not found");
+        var user = await _context.Users.FindAsync(id);
+        if (user == null) throw new NotFoundException("Product not found");
 
-        _mapper.Map(userDto, product);
+        _mapper.Map(userDto, user);
         await _context.SaveChangesAsync();
     }
 }
