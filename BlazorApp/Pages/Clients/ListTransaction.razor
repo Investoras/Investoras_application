@@ -1,0 +1,48 @@
+﻿@page "/Transactions"
+@using BlazorApp.Models
+<h1 class="text-center mb-3">List of Transactions</h1>
+
+@if (transactions == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>TransactionId</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>AccountId</th>
+                <th>CategoryId</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in transactions)
+            {
+                <tr>
+                    <td>@transaction.TransactionId</td>
+                    <td>@transaction.Date.ToShortDateString()</td>
+                    <td>@transaction.Amount</td>
+                    <td>@transaction.Description</td>
+                    <td>@transaction.AccountId</td>
+                    <td>@transaction.CategoryId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<a class="btn btn-primary mb-3" href="/Transactions/AddTransaction">New Transaction</a>
+
+
+@inject HttpClient Http
+@code {
+    private List<Transaction>? transactions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        transactions = await Http.GetFromJsonAsync<List<Transaction>>("https://localhost:7214/Transaction/All");
+    }
+}

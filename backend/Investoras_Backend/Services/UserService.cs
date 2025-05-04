@@ -14,6 +14,7 @@ public interface IUserService
     Task<UserDto> CreateUser(CreateUserDto userDto, CancellationToken cancellationToken);
     Task UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken);
     Task DeleteUser(int id, CancellationToken cancellationToken);
+    Task<UserDto> LoginUser(UserDto userDto, CancellationToken cancellationToken);
 }
 public class UserService : IUserService
 {
@@ -49,6 +50,15 @@ public class UserService : IUserService
     public async Task<UserDto> GetUserById(int id, CancellationToken cancellationToken)
     {
         var user = await _context.Users.FindAsync(id, cancellationToken);
+        return _mapper.Map<UserDto>(user);
+    }
+
+    public async Task<UserDto> LoginUser(UserDto userDto, CancellationToken cancellationToken)
+    {
+        Console.WriteLine("Sending login request...");
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Username == userDto.Username
+                                  && u.Password == userDto.Password);
         return _mapper.Map<UserDto>(user);
     }
 

@@ -62,6 +62,15 @@ public class UserController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(UserDto userDto, CancellationToken cancellationToken)
+    {
+        var user = await _userService.LoginUser(userDto, cancellationToken);
+        if (user == null)
+            return Unauthorized();
+        return Ok(user);
+    }
 }
 
 

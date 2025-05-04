@@ -1,0 +1,156 @@
+﻿@page "/Main"
+@using System.Globalization
+
+<div class="app-container">
+    <div style="display: flex; width: 100%; height: 100vh; margin: 0; padding: 0;">
+        <div class="left" style="flex: 1; border: 1px solid black;">
+            <button class="add-button" @onclick="ShowAddTransactionModal" style="width: 100%;  margin-bottom: 50px;">
+                Добавить запись
+            </button>
+            <div class="summary-section">
+                <div class="summary-card income" style="flex: 1;width: 100%;  margin-bottom: 50px;">
+                    <h3>Сводка (Доходы)</h3>
+                    <p class="amount">@TotalIncome.ToString("C", CultureInfo.CurrentCulture)</p>
+                </div>
+
+                <div class="summary-card expense" style="flex: 1;width: 100%;  margin-bottom: 50px;">
+                    <h3>Сводка (Расходы)</h3>
+                    <p class="amount">@TotalExpense.ToString("C", CultureInfo.CurrentCulture)</p>
+                </div>
+
+                <div class="summary-card balance" style="flex: 1;width: 100%;  margin-bottom: 50px;">
+                    <h3>Сводка (Баланс)</h3>
+                    <p class="amount">@Balance.ToString("C", CultureInfo.CurrentCulture)</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content" style="flex: 2; border: 1px solid black;">
+            <h1 class="app-title" style="text-align: center;">Название приложения</h1>
+            
+
+        <div class="chart-section">
+            <h2>График</h2>
+            <div class="chart-container">
+                <!-- Здесь будет график -->
+                <canvas id="financeChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+       
+        </div>
+        <div class="right" style="flex: 1; border: 1px solid black;">
+            <div class="user-info" style="text-align: center;">
+                <span class="username">Имя пользователя</span>
+            </div>
+        <div class="transactions-section">
+                <div class="recent-transactions" style="flex: 1;width: 100%;  margin-bottom: 50px;">
+                    <h2 style="flex: 1;width: 100%;  margin-bottom: 50px;">Список последних транзакций</h2>
+                    <ul class="transaction-list" style="flex: 1;width: 100%;  margin-bottom: 50px;">
+                    @foreach (var transaction in RecentTransactions)
+                    {
+                            <li class="transaction-item @(transaction.IsIncome ? "income" : "expense")" style="flex: 1;width: 100%;  margin-bottom: 50px;">
+                                <span class="description" style="flex: 1;width: 100%;  margin-bottom: 50px;">@transaction.Description</span>
+                                <span class="amount" style="flex: 1;width: 100%;  margin-bottom: 50px;">@transaction.Amount.ToString("C", CultureInfo.CurrentCulture)</span>
+                                <span class="date" style="flex: 1;width: 100%;  margin-bottom: 50px;">@transaction.Date.ToShortDateString()</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="full-history">
+                    <a class="btn btn-primary btn-sm" style="width: 100%;  margin-bottom: 50px;" href="/Transactions">История транзакций</a>
+                <!-- Здесь можно добавить таблицу с полной историей -->
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+@if (showAddModal)
+{
+    <div class="modal">
+        <div class="modal-content">
+            <h3>Добавить новую транзакцию</h3>
+            <div class="form-group">
+                <label>Тип:</label>
+                <select @bind="newTransaction.IsIncome">
+                    <option value="true">Доход</option>
+                    <option value="false">Расход</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Сумма:</label>
+                <input type="number" @bind="newTransaction.Amount" />
+            </div>
+            <div class="form-group">
+                <label>Описание:</label>
+                <input type="text" @bind="newTransaction.Description" />
+            </div>
+            <div class="form-group">
+                <label>Дата:</label>
+                <input type="date" @bind="newTransaction.Date" />
+            </div>
+            <div class="modal-actions">
+                <button @onclick="AddTransaction">Добавить</button>
+                <button @onclick="HideAddTransactionModal">Отмена</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Transaction> transactions = new();
+    private bool showAddModal = false;
+    private Transaction newTransaction = new();
+
+    private decimal TotalIncome => transactions.Where(t => t.IsIncome).Sum(t => t.Amount);
+    private decimal TotalExpense => transactions.Where(t => !t.IsIncome).Sum(t => t.Amount);
+    private decimal Balance => TotalIncome - TotalExpense;
+
+    private List<Transaction> RecentTransactions => transactions
+        .OrderByDescending(t => t.Date)
+        .Take(5)
+        .ToList();
+
+    private void ShowAddTransactionModal()
+    {
+        newTransaction = new Transaction { Date = DateTime.Now };
+        showAddModal = true;
+    }
+
+    private void HideAddTransactionModal()
+    {
+        showAddModal = false;
+    }
+
+    private void AddTransaction()
+    {
+        transactions.Add(newTransaction);
+        showAddModal = false;
+        // Здесь можно добавить вызов API для сохранения транзакции
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Загрузка данных из API
+        // Пример тестовых данных
+        transactions = new List<Transaction>
+        {
+            new Transaction { IsIncome = true, Amount = 1000, Description = "Зарплата", Date = DateTime.Now.AddDays(-2) },
+            new Transaction { IsIncome = false, Amount = 150, Description = "Продукты", Date = DateTime.Now.AddDays(-1) },
+            new Transaction { IsIncome = false, Amount = 50, Description = "Транспорт", Date = DateTime.Now },
+            new Transaction { IsIncome = true, Amount = 200, Description = "Фриланс", Date = DateTime.Now.AddDays(-3) },
+            new Transaction { IsIncome = false, Amount = 300, Description = "Одежда", Date = DateTime.Now.AddDays(-4) }
+        };
+    }
+
+    public class Transaction
+    {
+        public bool IsIncome { get; set; }
+        public decimal Amount { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+    }
+}
