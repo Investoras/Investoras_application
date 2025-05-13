@@ -28,6 +28,22 @@ public class TransactionController : ControllerBase
         if (transaction == null) return NotFound();
         return Ok(transaction);
     }
+
+
+    [HttpGet("Expenses")]
+    public async Task<IActionResult> GetSumOfExpensesByAccountId(int id, CancellationToken cancellationToken)
+    {
+        var expenses = await _transactionService.GetSumOfExpensesByAccountId(id, cancellationToken);
+        return Ok(expenses);
+    }
+
+    [HttpGet("Incomes")]
+    public async Task<IActionResult> GetSumOfIncomeByAccountId(int id, CancellationToken cancellationToken)
+    {
+        var expenses = await _transactionService.GetSumOfIncomeByAccountId(id, cancellationToken);
+        return Ok(expenses);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddTransaction(CreateTransactionDto transactionDto, CancellationToken cancellationToken)
     {
@@ -61,5 +77,17 @@ public class TransactionController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+    }
+    [HttpGet("LastFive")]
+    public async Task<IActionResult> GetLastFiveTransactionsByAccountId(int id, CancellationToken cancellationToken)
+    {
+        var allTransactions = await _transactionService.GetLastFiveTransactionsByAccountId(id,cancellationToken);
+        return Ok(allTransactions);
+    }
+    [HttpGet("AllByAccountId")]
+    public async Task<IActionResult> GetAllTransactionsByAccoutnId(int id, CancellationToken cancellationToken)
+    {
+        var allTransactions = await _transactionService.GetAllTransactionsByAccoutnId(id, cancellationToken);
+        return Ok(allTransactions);
     }
 }

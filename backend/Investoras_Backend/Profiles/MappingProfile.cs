@@ -3,26 +3,42 @@
 using AutoMapper;
 using Investoras_Backend.Data.Dto;
 using Investoras_Backend.Data.Entities;
+using Investoras_Backend.Data.Models;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // Добавьте это отображение
-        CreateMap<CreateUserDto, User>();
+        CreateMap<CreateUserDto, UserModel>();
+        CreateMap<UpdateUserDto, UserModel>();
         CreateMap<UpdateUserDto, User>();
-        CreateMap<User, UserDto>();
+        CreateMap<UserModel, User>();
+        CreateMap<UserModel, UpdateUserDto>();
+        CreateMap<UserDto, UserModel>();
+        CreateMap<User, UserModel>();
 
-        CreateMap<CreateTransactionDto, Transaction>();
+        CreateMap<CreateTransactionDto, TransactionModel>();
+        CreateMap<UpdateTransactionDto, TransactionModel>();
         CreateMap<UpdateTransactionDto, Transaction>();
-        CreateMap<Transaction, TransactionDto>();
+        CreateMap<TransactionModel, Transaction>();
+        CreateMap<TransactionModel, UpdateTransactionDto>();
+        CreateMap<TransactionDto, TransactionModel>();
+        CreateMap<Transaction, TransactionModel>();
 
-        CreateMap<CreateAccountDto, Account>();
+        CreateMap<CreateAccountDto, AccountModel>();
+        CreateMap<UpdateAccountDto, AccountModel>();
         CreateMap<UpdateAccountDto, Account>();
-        CreateMap<Account, AccountDto>();
+        CreateMap<AccountModel, Account>();
+        CreateMap<AccountModel, UpdateAccountDto>();
+        CreateMap<AccountDto, AccountModel>();
+        CreateMap<Account, AccountModel>();
 
-        CreateMap<CreateCategoryDto, Category>();
+        CreateMap<CreateCategoryDto, CategoryModel>();
+        CreateMap<UpdateCategoryDto, CategoryModel>();
         CreateMap<UpdateCategoryDto, Category>();
-        CreateMap<Category, CategoryDto>();
+        CreateMap<CategoryModel, Category>();
+        CreateMap<CategoryModel, UpdateCategoryDto>();
+        CreateMap<CategoryDto, CategoryModel>();
+        CreateMap<Category, CategoryModel>();
     }
 }

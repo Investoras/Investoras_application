@@ -132,6 +132,9 @@ namespace Investoras_Backend.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 

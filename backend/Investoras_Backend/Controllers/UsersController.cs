@@ -16,11 +16,11 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     [HttpGet("All")]
-    public async Task<ActionResult> GetAllUsers(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
     {
         var allUsers = await _userService.GetAllUsers(cancellationToken);
         return Ok(allUsers);
-    }
+    } 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(int id, CancellationToken cancellationToken)
     {

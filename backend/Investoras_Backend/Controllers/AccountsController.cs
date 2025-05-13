@@ -28,6 +28,14 @@ public class AccountController : ControllerBase
         if (account == null) return NotFound();
         return Ok(account);
     }
+
+    [HttpGet("Balance")]
+    public async Task<IActionResult> GetBalance(int id, CancellationToken cancellationToken)
+    {
+        var balance = await _accountService.GetTotalBalanceById(id, cancellationToken);
+        return Ok(balance);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddAccount(CreateAccountDto accountDto, CancellationToken cancellationToken)
     {
