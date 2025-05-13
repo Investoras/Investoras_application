@@ -6,6 +6,7 @@ namespace Investoras_Backend.Data.Dto;
 
 public record TransactionDto(
     int TransactionId,
+    DateTime Date,
     decimal Amount,
     string Description,
     int AccountId,
@@ -20,6 +21,8 @@ public record CreateTransactionDto(
     [StringLength(100, ErrorMessage = "Слишком длинное описание.")]
     string Description,
 
+    DateTime Date,
+
     int AccountId,
 
     int CategoryId
@@ -33,6 +36,8 @@ public record UpdateTransactionDto(
     [Required(ErrorMessage = "Введите описание.")]
     [StringLength(100, ErrorMessage = "Слишком длинное описание.")]
     string Description,
+
+    DateTime Date,
 
     int AccountId,
 

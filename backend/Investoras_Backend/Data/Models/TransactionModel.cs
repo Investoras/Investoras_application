@@ -3,6 +3,7 @@
     public class TransactionModel
     {
         public int TransactionId {  get; private set; }
+        public DateTime Date { get; private set; }
         public decimal Amount {  get; private set; }
         public string Description {  get; private set; }
         public int AccountId {  get; private set; }
@@ -13,6 +14,7 @@
             return new TransactionModel
             {
                 Amount = amount,
+                Date = DateTime.UtcNow,
                 Description = description,
                 AccountId = accountId,
                 CategoryId = categoryId
