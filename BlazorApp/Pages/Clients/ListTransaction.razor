@@ -1,5 +1,6 @@
 ﻿@page "/Transactions"
-@using BlazorApp.Models
+
+
 <h1 class="text-center mb-3">List of Transactions</h1>
 
 @if (transactions == null)
@@ -35,14 +36,3 @@ else
     </table>
 }
 <a class="btn btn-primary mb-3" href="/Transactions/AddTransaction">New Transaction</a>
-
-
-@inject HttpClient Http
-@code {
-    private List<Transaction>? transactions;
-
-    protected override async Task OnInitializedAsync()
-    {
-        transactions = await Http.GetFromJsonAsync<List<Transaction>>("https://localhost:7214/Transaction/All");
-    }
-}

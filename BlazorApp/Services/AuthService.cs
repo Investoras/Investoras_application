@@ -1,17 +1,7 @@
-﻿using BlazorApp.Models;
-using BlazorApp.Models.Dto;
+﻿using ClassLibrary.Dto;
 using System.Net.Http.Json;
 
 namespace BlazorApp.Services;
-
-public interface IAuthService
-{
-    Task<bool> LoginAsync(UserDto loginModel);
-    Task RegisterAsync(UserDto loginModel);
-    Task LogoutAsync();
-    bool IsAuthenticated { get; }
-    int? UserId { get; }
-}
 
 public class AuthService : IAuthService
 {
@@ -33,7 +23,7 @@ public class AuthService : IAuthService
         var response = await _httpClient.PostAsJsonAsync("https://localhost:7214/User/login", loginModel);
         if (response.IsSuccessStatusCode)
         {
-            var user = await response.Content.ReadFromJsonAsync<User>();
+            var user = await response.Content.ReadFromJsonAsync<UserDto>();
             UserId = user.UserId;
             IsAuthenticated = true;
             return true;

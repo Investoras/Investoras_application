@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Investoras_Backend.Data;
 
-public class ApplicationDbContext(DbContextOptions options, IConfiguration configuration) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
+    : DbContext(options)
 {
+    private readonly IConfiguration _configuration = configuration;
     public DbSet<User> Users { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -12,7 +14,11 @@ public class ApplicationDbContext(DbContextOptions options, IConfiguration confi
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FinancialApp;Username=postgres;Password=123");
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseNpgsql(connectionString);
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

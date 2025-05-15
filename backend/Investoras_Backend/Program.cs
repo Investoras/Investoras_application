@@ -43,6 +43,13 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Api v1");
 });
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    //db.Database.EnsureCreated(); 
+    db.Database.Migrate();
+}
+
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");

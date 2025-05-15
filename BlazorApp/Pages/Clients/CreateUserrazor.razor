@@ -1,5 +1,4 @@
 ﻿@page "/Users/AddUser"
-@using BlazorApp.Models.Dto
 
 <div class="row">
 	<div class="col-lg-8">
@@ -8,21 +7,21 @@
 		<div class="row mb-3">
 			<label class="col-md-4 col-form-label">UserName</label>
 			<div class="col-md-8">
-				<input class="form-control" @bind="userData.Username"/>
+				<input class="form-control" @bind="UserData.Username"/>
 			</div>
 		</div>
 
 		<div class="row mb-3">
 			<label class="col-md-4 col-form-label">Email</label>
 			<div class="col-md-8">
-				<input class="form-control" @bind="userData.Email" />
+				<input class="form-control" @bind="UserData.Email" />
 			</div>
 		</div>
 
 		<div class="row mb-3">
 			<label class="col-md-4 col-form-label">Password</label>
 			<div class="col-md-8">
-				<input class="form-control" @bind="userData.Password" />
+				<input class="form-control" @bind="UserData.Password" />
 			</div>
 		</div>
 
@@ -38,24 +37,4 @@
 	</div>
 </div>
 
-@inject HttpClient Http
-@inject NavigationManager navManager
-@code {
-	public UserDto userData { get; set; } = new();
 
-	protected async Task SaveUser()
-	{
-		userData.CreatedAt = DateTime.UtcNow;
-		var response = await Http.PostAsJsonAsync("https://localhost:7214/User",userData);
-
-		if (response.IsSuccessStatusCode)
-		{
-			navManager.NavigateTo("/Users");
-		}
-		else
-		{
-			var strResponse = await response.Content.ReadAsStringAsync();
-			Console.WriteLine("Json Response: \n" + strResponse);
-		}
-	}
-}

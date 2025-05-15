@@ -1,7 +1,5 @@
 ﻿@page "/Users/UpdateUser/{Id:int}"
-@using System.Text.Json.Nodes
-@using Models.Dto
-@using Models
+
 
 <div class="row">
 	<div class="col-lg-8">
@@ -46,53 +44,3 @@
 		}
 	</div>
 </div>
-
-@inject HttpClient Http
-@inject NavigationManager navManager
-@code {
-	[Parameter]
-	public int Id { set; get; }
-	public User user = null;
-	public UserDto userData { set; get; } = new();
-	public JsonNode Errors { set; get; } = new JsonObject();
-
-	protected override async Task OnParametersSetAsync()
-	{
-		try
-		{
-			user = await Http.GetFromJsonAsync<User>("https://localhost:7214/User/" + Id);
-			userData.Username = user?.Username;
-			userData.Email = user.Email;
-			userData.Password = user.Password;
-			userData.CreatedAt = DateTime.UtcNow;
-		}
-		catch(Exception ex)
-		{
-			Console.WriteLine("Exception: " + ex.Message);
-		}
-	}
-
-	protected async Task SaveUser()
-	{
-		var response = await Http.PutAsJsonAsync("https://localhost:7214/User/" + Id, userData);
-		if (response.IsSuccessStatusCode)
-		{
-			navManager.NavigateTo("/Users");
-		}
-		else
-		{
-			var strResponse = await response.Content.ReadAsStringAsync();
-			try
-			{
-				var jsonResponse = JsonNode.Parse(strResponse);
-				Errors = jsonResponse?["errors"] ?? new JsonObject();
-
-			}
-			catch(Exception ex)
-			{
-				
-			}
-		}
-
-	}
-}
