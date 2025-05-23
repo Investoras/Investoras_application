@@ -1,4 +1,5 @@
 ﻿using ClassLibrary.Dto;
+using ClassLibrary.Dto.Transaction;
 
 
 namespace BlazorApp.Services

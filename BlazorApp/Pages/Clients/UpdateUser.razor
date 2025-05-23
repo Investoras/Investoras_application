@@ -17,6 +17,10 @@
 					<input class="form-control" @bind="userData.Username" />
 				</div>
 			</div>
+			@if (Errors?["Username"] != null)
+			{
+				<div class="text-danger">@Errors["Username"]![0]!.ToString()</div>
+			}
 
 			<div class="row mb-3">
 				<label class="col-md-4 col-form-label">Email</label>
@@ -24,6 +28,10 @@
 					<input class="form-control" @bind="userData.Email" />
 				</div>
 			</div>
+			@if (Errors?["Email"] != null)
+			{
+				<div class="text-danger">@Errors["Email"]![0]!.ToString()</div>
+			}
 
 			<div class="row mb-3">
 				<label class="col-md-4 col-form-label">Password</label>
@@ -31,6 +39,10 @@
 					<input class="form-control" @bind="userData.Password" />
 				</div>
 			</div>
+			@if (Errors?["Password"] != null)
+			{
+				<div class="text-danger">@Errors["Password"]![0]!.ToString()</div>
+			}
 
 			<div class="row">
 				<div class="offset-md-4 row-cols-md-4 d-grid">

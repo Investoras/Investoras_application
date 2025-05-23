@@ -1,4 +1,4 @@
-﻿using Investoras_Backend.Data.Dto;
+﻿using ClassLibrary.Dto.Transaction;
 using Investoras_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;

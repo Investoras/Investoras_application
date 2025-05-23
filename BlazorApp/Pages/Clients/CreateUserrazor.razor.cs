@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using ClassLibrary.Dto;
+using ClassLibrary.Dto.User;
 using System.Net.Http.Json;
 
 
@@ -10,7 +10,7 @@ namespace BlazorApp.Pages.Clients
         [Inject] private HttpClient Http { get; set; } = default!;
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
-        public UserDto UserData { get; set; } = new();
+        public CreateUserDto UserData { get; set; } = new();
 
         protected async Task SaveUser()
         {

@@ -1,9 +1,12 @@
 ﻿namespace Investoras_Backend;
 // Profiles/MappingProfile.cs
 using AutoMapper;
-using Investoras_Backend.Data.Dto;
 using Investoras_Backend.Data.Entities;
 using Investoras_Backend.Data.Models;
+using ClassLibrary.Dto.User;
+using ClassLibrary.Dto.Transaction;
+using ClassLibrary.Dto.Account;
+using ClassLibrary.Dto.Category;
 
 public class MappingProfile : Profile
 {

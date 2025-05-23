@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Dto;
+﻿using ClassLibrary.Dto.User;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 

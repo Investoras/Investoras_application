@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
-using ClassLibrary.Dto;
+using ClassLibrary.Dto.User;
 
 
 namespace BlazorApp.Pages.Clients
@@ -14,7 +14,7 @@ namespace BlazorApp.Pages.Clients
         [Parameter]
         public int Id { set; get; }
         public UserDto user = null;
-        public UserDto userData { set; get; } = new();
+        public UpdateUserDto userData { set; get; } = new();
         public JsonNode Errors { set; get; } = new JsonObject();
 
         protected override async Task OnParametersSetAsync()
@@ -24,14 +24,14 @@ namespace BlazorApp.Pages.Clients
                 user = await Http.GetFromJsonAsync<UserDto>("https://localhost:7214/User/" + Id);
                 userData.Username = user?.Username;
                 userData.Email = user.Email;
-                userData.Password = user.Password;
-                userData.CreatedAt = DateTime.UtcNow;
+                userData.Password = "";
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Exception: " + ex.Message);
             }
         }
+
 
         protected async Task SaveUser()
         {

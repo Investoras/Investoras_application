@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Dto;
+﻿using ClassLibrary.Dto.User;
 using BlazorApp.Services;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;

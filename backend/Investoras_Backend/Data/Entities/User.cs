@@ -10,6 +10,5 @@ namespace Investoras_Backend.Data.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public DateTime CreatedAt { get; init; }
-        // Другие поля...
     }
 }

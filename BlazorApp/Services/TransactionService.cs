@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using ClassLibrary.Dto;
+using ClassLibrary.Dto.Transaction;
 
 
 namespace BlazorApp.Services
@@ -28,23 +28,23 @@ namespace BlazorApp.Services
         }
         public async Task<List<TransactionDto>> GetLastFiveAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/LastFive");
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/LastFive?id={accountId}");
         }
 
         public async Task<List<TransactionDto>> GetAllByAccountIdAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/AllByAccountId");
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/AllByAccountId?id={accountId}");
         }
 
 
         public async Task<decimal> GetExpensesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"Transaction/Expenses");
+            return await _http.GetFromJsonAsync<decimal>($"Transaction/Expenses?id={accountId}");
         }
 
         public async Task<decimal> GetIncomesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"Transaction/Incomes");
+            return await _http.GetFromJsonAsync<decimal>($"Transaction/Incomes?id={accountId}");
         }
 
 

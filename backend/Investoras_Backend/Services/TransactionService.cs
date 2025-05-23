@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Investoras_Backend.Data;
-using Investoras_Backend.Data.Dto;
+using ClassLibrary.Dto.Transaction;
 using Investoras_Backend.Data.Entities;
 using Investoras_Backend.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
