@@ -1,6 +1,8 @@
 ﻿@page "/Main"
 @using System.Globalization;
-
+@using ChartJs.Blazor.PieChart;
+@using System.Drawing;
+@using ChartJs.Blazor.Util
 
 <div class="app-container">
     <div style="display: flex; width: 100%; margin: 0; padding: 0;">
@@ -29,9 +31,14 @@
             <h1 class="app-title" style="text-align: center;">Название приложения</h1>
 
             <div class="chart-section">
-                <h2>График</h2>
+                <h2 style="text-align:center">График расходов</h2>
                 <div class="chart-container">
-                    <!-- Здесь будет график -->
+                    <Chart
+                    Width="400"
+                    Height="200"
+                    Config="_pieConfig"
+                    @ref="_pieChart">
+                    </Chart>
                     <canvas id="financeChart" width="400" height="200"></canvas>
                 </div>
             </div>
@@ -95,4 +102,38 @@
             </div>
         </div>
     </div>
+}
+@code {
+    private Chart _pieChart;
+    private PieConfig _pieConfig;
+
+    protected override void OnInitialized()
+    {
+        _pieConfig = new PieConfig
+            {
+                Options = new PieOptions
+                {
+                    Responsive = true,
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+						Text = "Май (временно)"
+                    }
+                }
+            };
+
+        PieDataset<int> dataset = new PieDataset<int>(new[] { 1, 2, 3, 4, 5 })
+        {
+                BackgroundColor = new[]
+                {
+					ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+					ColorUtil.RandomColorString()
+                }
+        };
+
+        _pieConfig.Data.Datasets.Add(dataset);
+    }
 }
