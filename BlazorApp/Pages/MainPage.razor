@@ -103,37 +103,8 @@
         </div>
     </div>
 }
+
 @code {
     private Chart _pieChart;
     private PieConfig _pieConfig;
-
-    protected override void OnInitialized()
-    {
-        _pieConfig = new PieConfig
-            {
-                Options = new PieOptions
-                {
-                    Responsive = true,
-                    Title = new OptionsTitle
-                    {
-                        Display = true,
-						Text = "Май (временно)"
-                    }
-                }
-            };
-
-        PieDataset<int> dataset = new PieDataset<int>(new[] { 1, 2, 3, 4, 5 })
-        {
-                BackgroundColor = new[]
-                {
-					ColorUtil.RandomColorString(),
-                    ColorUtil.RandomColorString(),
-                    ColorUtil.RandomColorString(),
-                    ColorUtil.RandomColorString(),
-					ColorUtil.RandomColorString()
-                }
-        };
-
-        _pieConfig.Data.Datasets.Add(dataset);
-    }
 }
