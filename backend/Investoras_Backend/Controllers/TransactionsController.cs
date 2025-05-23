@@ -30,14 +30,14 @@ public class TransactionController : ControllerBase
     }
 
 
-    [HttpGet("Expenses")]
+    [HttpGet("Expenses/{id:int}")]
     public async Task<IActionResult> GetSumOfExpensesByAccountId(int id, CancellationToken cancellationToken)
     {
         var expenses = await _transactionService.GetSumOfExpensesByAccountId(id, cancellationToken);
         return Ok(expenses);
     }
 
-    [HttpGet("Incomes")]
+    [HttpGet("Incomes/{id:int}")]
     public async Task<IActionResult> GetSumOfIncomeByAccountId(int id, CancellationToken cancellationToken)
     {
         var expenses = await _transactionService.GetSumOfIncomeByAccountId(id, cancellationToken);
@@ -78,13 +78,13 @@ public class TransactionController : ControllerBase
             return NotFound(ex.Message);
         }
     }
-    [HttpGet("LastFive")]
+    [HttpGet("LastFive/{id:int}")]
     public async Task<IActionResult> GetLastFiveTransactionsByAccountId(int id, CancellationToken cancellationToken)
     {
         var allTransactions = await _transactionService.GetLastFiveTransactionsByAccountId(id,cancellationToken);
         return Ok(allTransactions);
     }
-    [HttpGet("AllByAccountId")]
+    [HttpGet("AllByAccountId/{id:int}")]
     public async Task<IActionResult> GetAllTransactionsByAccoutnId(int id, CancellationToken cancellationToken)
     {
         var allTransactions = await _transactionService.GetAllTransactionsByAccoutnId(id, cancellationToken);
