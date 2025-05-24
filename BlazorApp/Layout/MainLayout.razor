@@ -9,12 +9,12 @@
         <div class="top-row px-4">
             @if (AuthService.IsAuthenticated)
             {
-                <a href="#" @onclick="Logout">Logout</a>
+                <a href="#" @onclick="Logout">Выйти</a>
             }
             else
             {
-                <a href="login">Login</a>
-                <a href="register">Register</a>
+                <a href="login">Войти</a>
+                <a href="register">Зарегистрироваться</a>
             }
         </div>
 

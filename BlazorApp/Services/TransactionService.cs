@@ -27,7 +27,11 @@ namespace BlazorApp.Services
         }
         public async Task<List<TransactionDto>> GetLastFiveAsync(int accountId)
         {
+<<<<<<< HEAD
             return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/LastFive?id={accountId}");
+=======
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/LastFive");
+>>>>>>> _piechart
         }
         // something like
         //public async Task<List<TransactionDto>> GetLastFiveAsync()
@@ -41,36 +45,48 @@ namespace BlazorApp.Services
 
         public async Task<List<TransactionDto>> GetAllByAccountIdAsync(int accountId)
         {
+<<<<<<< HEAD
             return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/AllByAccountId?id={accountId}");
+=======
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/AllByAccountId");
+>>>>>>> _piechart
         }
 
 
         public async Task<decimal> GetExpensesAsync(int accountId)
         {
+<<<<<<< HEAD
             return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Expenses?id={accountId}");
+=======
+            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Expenses");
+>>>>>>> _piechart
         }
 
         public async Task<decimal> GetIncomesAsync(int accountId)
         {
+<<<<<<< HEAD
             return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Incomes?id={accountId}");
+=======
+            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Incomes");
+>>>>>>> _piechart
         }
 
 
         public async Task AddTransactionAsync(CreateTransactionDto dto)
         {
-            var response = await _http.PostAsJsonAsync("Transaction", dto);
+            var response = await _http.PostAsJsonAsync("https://localhost:7214/Transaction", dto);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task UpdateTransactionAsync(int id, UpdateTransactionDto dto)
         {
-            var response = await _http.PutAsJsonAsync($"Transaction/{id}", dto);
+            var response = await _http.PutAsJsonAsync($"https://localhost:7214/Transaction/{id}", dto);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task DeleteTransactionAsync(int id)
         {
-            var response = await _http.DeleteAsync($"Transaction/{id}");
+            var response = await _http.DeleteAsync($"https://localhost:7214/Transaction/{id}");
             response.EnsureSuccessStatusCode();
         }
     }
