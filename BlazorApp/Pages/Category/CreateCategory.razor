@@ -1,0 +1,40 @@
+﻿@page "/Categories/AddCategory"
+
+<div class="row">
+	<div class="col-lg-8">
+		<h1 class="mb-5">New Category</h1>
+
+		<div class="row mb-3">
+			<label class="col-md-4 col-form-label">Name</label>
+			<div class="col-md-8">
+				<input class="form-control" @bind="CategoryData.Name" />
+			</div>
+		</div>
+
+		<div class="row mb-3">
+			<label class="col-md-4 col-form-label">Is Income</label>
+			<div class="col-md-8">
+				<InputCheckbox class="form-check-input" @bind-Value="CategoryData.IsIncome" />
+			</div>
+		</div>
+
+		<div class="row mb-3">
+			<label class="col-md-4 col-form-label">Description</label>
+			<div class="col-md-8">
+				<input class="form-control" @bind="CategoryData.Description" />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="offset-md-4 row-cols-md-4 d-grid">
+				<button class="btn btn-primary" @onclick="SaveCategory">Submit</button>
+
+			</div>
+			<div class="col-md-4 d-grid">
+				<a class="btn btn-outline-primary" href="/Categories">Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+

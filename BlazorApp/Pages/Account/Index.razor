@@ -1,0 +1,39 @@
+﻿@page "/Accounts"
+
+
+<h1 class="text-center mb-3">List of Accounts</h1>
+<a class="btn btn-primary mb-3" href="/Accounts/AddAccount">New Account</a>
+
+@if (accounts == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>AccountId</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>UserId</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in accounts)
+            {
+                <tr>
+                    <td>@account.AccountId</td>
+                    <td>@account.Name</td>
+                    <td>@account.Balance</td>
+                    <td>@account.UserId</td>
+                    <td style="white-space:nowrap">
+                        <a class="btn btn-primary btn-sm" href="/Accounts/UpdateAccount/@account.AccountId">Update</a>
+                        <a class="btn btn-danger btn-sm" href="/Accounts/DeleteAccount/@account.AccountId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

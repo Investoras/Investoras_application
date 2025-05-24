@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorApp.Pages.Clients;
+namespace BlazorApp.Pages.Transaction;
 
 
 public partial class ListTransaction
@@ -11,8 +11,8 @@ public partial class ListTransaction
 
     private List<TransactionDto>? transactions;
 
-    //protected override async Task OnInitializedAsync()
-    protected async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    //protected async Task OnInitializedAsync()
     {
         transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("https://localhost:7214/Transaction/All");
     }

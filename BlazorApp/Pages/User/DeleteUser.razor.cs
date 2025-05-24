@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace BlazorApp.Pages.Clients
+namespace BlazorApp.Pages.User
 {
     public partial class DeleteUser
     {

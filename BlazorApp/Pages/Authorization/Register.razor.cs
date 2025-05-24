@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 
 
-namespace BlazorApp.Pages
+namespace BlazorApp.Pages.Authorization
 {
     public partial class Register
     {

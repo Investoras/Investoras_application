@@ -30,8 +30,4 @@
     <ProjectReference Include="..\..\ClassLibrary\ClassLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Dto\" />
-  </ItemGroup>
-
 </Project>

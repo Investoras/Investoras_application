@@ -1,0 +1,39 @@
+﻿@page "/Categories"
+
+
+<h1 class="text-center mb-3">List of Categories</h1>
+<a class="btn btn-primary mb-3" href="/Categories/AddCategory">New Category</a>
+
+@if (Categories == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>CategoryId</th>
+                <th>Name</th>
+                <th>IsIncome</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Category in Categories)
+            {
+                <tr>
+                    <td>@Category.CategoryId</td>
+                    <td>@Category.Name</td>
+                    <td>@Category.IsIncome</td>
+                    <td>@Category.Description</td>
+                    <td style="white-space:nowrap">
+                        <a class="btn btn-primary btn-sm" href="/Categories/UpdateCategory/@Category.CategoryId">Update</a>
+                        <a class="btn btn-danger btn-sm" href="/Categories/DeleteCategory/@Category.CategoryId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

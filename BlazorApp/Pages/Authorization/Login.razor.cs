@@ -5,9 +5,9 @@ using System.Net.Http.Json;
 
 
 
-namespace BlazorApp.Pages
+namespace BlazorApp.Pages.Authorization
 {
-    public partial class Login 
+    public partial class Login
     {
         [Inject] private IAuthService AuthService { get; set; } = default!;
         [Inject] private NavigationManager Navigation { get; set; } = default!;

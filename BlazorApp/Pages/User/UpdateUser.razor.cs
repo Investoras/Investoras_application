@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 using ClassLibrary.Dto.User;
 
 
-namespace BlazorApp.Pages.Clients
+namespace BlazorApp.Pages.User
 {
     public partial class UpdateUser
     {

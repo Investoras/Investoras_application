@@ -1,0 +1,58 @@
+﻿@page "/accounts/Updateaccount/{Id:int}"
+
+
+<div class="row">
+	<div class="col-lg-8">
+		<h1 class="mb-5">Update</h1>
+
+		@if (Account == null)
+		{
+			<p><em>Loading ...</em></p>
+		}
+		else
+		{
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">accountName</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="AccountData.Name" />
+				</div>
+			</div>
+			@if (Errors?["Name"] != null)
+			{
+				<div class="text-danger">@Errors["Name"]![0]!.ToString()</div>
+			}
+
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">Balance</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="AccountData.Balance" />
+				</div>
+			</div>
+			@if (Errors?["Email"] != null)
+			{
+				<div class="text-danger">@Errors["Email"]![0]!.ToString()</div>
+			}
+
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">UserId</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="AccountData.UserId" />
+				</div>
+			</div>
+			@if (Errors?["UserId"] != null)
+			{
+				<div class="text-danger">@Errors["UserId"]![0]!.ToString()</div>
+			}
+
+			<div class="row">
+				<div class="offset-md-4 row-cols-md-4 d-grid">
+					<button class="btn btn-primary" @onclick="SaveAccount">Submit</button>
+
+				</div>
+				<div class="col-md-4 d-grid">
+					<a class="btn btn-outline-primary" href="/Accounts">Cancel</a>
+				</div>
+			</div>
+		}
+	</div>
+</div>

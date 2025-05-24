@@ -1,0 +1,58 @@
+﻿@page "/Categories/UpdateCategory/{Id:int}"
+
+
+<div class="row">
+	<div class="col-lg-8">
+		<h1 class="mb-5">Update</h1>
+
+		@if (Category == null)
+		{
+			<p><em>Loading ...</em></p>
+		}
+		else
+		{
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">CategoryName</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="CategoryData.Name" />
+				</div>
+			</div>
+			@if (Errors?["Name"] != null)
+			{
+				<div class="text-danger">@Errors["Name"]![0]!.ToString()</div>
+			}
+
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">IsIncome</label>
+				<div class="col-md-8">
+					<InputCheckbox class="form-check-input" @bind-Value="CategoryData.IsIncome" />
+				</div>
+			</div>
+			@if (Errors?["IsIncome"] != null)
+			{
+				<div class="text-danger">@Errors["IsIncome"]![0]!.ToString()</div>
+			}
+
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">Description</label>
+				<div class="col-md-8">
+					<input class="form-control" @bind="CategoryData.Description" />
+				</div>
+			</div>
+			@if (Errors?["Description"] != null)
+			{
+				<div class="text-danger">@Errors["Description"]![0]!.ToString()</div>
+			}
+
+			<div class="row">
+				<div class="offset-md-4 row-cols-md-4 d-grid">
+					<button class="btn btn-primary" @onclick="SaveCategory">Submit</button>
+
+				</div>
+				<div class="col-md-4 d-grid">
+					<a class="btn btn-outline-primary" href="/Categories">Cancel</a>
+				</div>
+			</div>
+		}
+	</div>
+</div>

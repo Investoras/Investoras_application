@@ -4,47 +4,55 @@ using ClassLibrary.Dto.Transaction;
 
 namespace BlazorApp.Services
 {
-
-    // unsure if anything works
-
     public class TransactionService : ITransactionService
     {
         private readonly HttpClient _http;
+        private readonly IAuthService _authService;
 
-        public TransactionService(HttpClient http)
+        public TransactionService(HttpClient http, IAuthService authService)
         {
             _http = http;
+            _authService = authService;
         }
 
 
         public async Task<List<TransactionDto>> GetTransactionsAsync()
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>("Transaction/All");
+            return await _http.GetFromJsonAsync<List<TransactionDto>>("https://localhost:7214/Transaction/All");
         }
 
         public async Task<TransactionDto> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<TransactionDto>($"Transaction/{id}");
+            return await _http.GetFromJsonAsync<TransactionDto>($"https://localhost:7214/Transaction/{id}");
         }
         public async Task<List<TransactionDto>> GetLastFiveAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/LastFive?id={accountId}");
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/LastFive?id={accountId}");
         }
+        // something like
+        //public async Task<List<TransactionDto>> GetLastFiveAsync()
+        //{
+        //    if (_authService.UserId == null)
+        //        throw new InvalidOperationException("User is not authenticated.");
+
+        //    return await _http.GetFromJsonAsync<List<TransactionDto>>(
+        //        $"https://localhost:7214/Transaction/LastFive?id={_authService.UserId}");
+        //}
 
         public async Task<List<TransactionDto>> GetAllByAccountIdAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/AllByAccountId?id={accountId}");
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/AllByAccountId?id={accountId}");
         }
 
 
         public async Task<decimal> GetExpensesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"Transaction/Expenses?id={accountId}");
+            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Expenses?id={accountId}");
         }
 
         public async Task<decimal> GetIncomesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"Transaction/Incomes?id={accountId}");
+            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Incomes?id={accountId}");
         }
 
 

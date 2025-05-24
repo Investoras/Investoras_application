@@ -3,9 +3,9 @@ using ClassLibrary.Dto.User;
 using System.Net.Http.Json;
 
 
-namespace BlazorApp.Pages.Clients
+namespace BlazorApp.Pages.User
 {
-    public partial class CreateUserrazor
+    public partial class CreateUser
     {
         [Inject] private HttpClient Http { get; set; } = default!;
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;

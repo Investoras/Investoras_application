@@ -1,0 +1,7 @@
+﻿@page "/Accounts/DeleteAccount/{Id:int}"
+
+
+<h1 class="mb-3">Delete Account</h1>
+<p>Are you sure want to delete account with Id @Id?</p>
+<button class="btn btn-danger" @onclick="Delete_Account">Delete</button>
+<a class="btn btn-secondary" href="/Accounts">Cancel</a>

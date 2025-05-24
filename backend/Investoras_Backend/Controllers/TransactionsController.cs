@@ -2,12 +2,15 @@
 using Investoras_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Investoras_Backend.Controllers;
 
+//[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class TransactionController : ControllerBase
+
 {
     private ITransactionService _transactionService;
 
