@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Investoras_Backend.Data;
-using Investoras_Backend.Data.Dto;
+using ClassLibrary.Dto.Transaction;
 using Investoras_Backend.Data.Entities;
 using Investoras_Backend.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -11,7 +11,7 @@ namespace Investoras_Backend.Services;
 
 public interface ITransactionService
 {
-    Task<IEnumerable<TransactionModel>> GetAllTransactions(CancellationToken cancellationToken);
+    Task<IEnumerable<TransactionDto>> GetAllTransactions(CancellationToken cancellationToken);
     Task<TransactionModel> GetTransactionById(int id, CancellationToken cancellationToken);
     Task<TransactionModel> CreateTransaction(CreateTransactionDto transactionDto, CancellationToken cancellationToken);
     Task UpdateTransaction(int id, UpdateTransactionDto transactionDto, CancellationToken cancellationToken);
@@ -68,10 +68,17 @@ public class TransactionService : ITransactionService
         return sum;
     }
 
-    public async Task<IEnumerable<TransactionModel>> GetAllTransactions(CancellationToken cancellationToken)
+    //public async Task<IEnumerable<TransactionModel>> GetAllTransactions(CancellationToken cancellationToken)
+    //{
+    //    var allTransactions = await _context.Transactions.ToListAsync(cancellationToken);
+    //    return _mapper.Map<IEnumerable<TransactionModel>>(allTransactions);
+    //}
+    public async Task<IEnumerable<TransactionDto>> GetAllTransactions(CancellationToken cancellationToken)
     {
-        var allTransactions = await _context.Transactions.ToListAsync(cancellationToken);
-        return _mapper.Map<IEnumerable<TransactionModel>>(allTransactions);
+        var allTransactions = await _context.Transactions
+            .Include(t => t.Category)
+            .ToListAsync(cancellationToken);
+        return _mapper.Map<IEnumerable<TransactionDto>>(allTransactions);
     }
     public async Task<IEnumerable<TransactionModel>> GetAllTransactionsByAccoutnId(int id, CancellationToken cancellationToken)
     {

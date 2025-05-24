@@ -1,0 +1,32 @@
+﻿using ClassLibrary.Dto.Category;
+using System.Net.Http.Json;
+
+namespace BlazorApp.Services
+{
+    public class CategoryService : ICategoryService
+    {
+        private readonly HttpClient _http;
+
+        public CategoryService(HttpClient http)
+        {
+            _http = http;
+        }
+
+        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
+            => await _http.GetFromJsonAsync<IEnumerable<CategoryDto>>("https://localhost:7214/Category/All")
+               ?? Enumerable.Empty<CategoryDto>();
+
+        public async Task<CategoryDto?> GetByIdAsync(int id)
+            => await _http.GetFromJsonAsync<CategoryDto>($"https://localhost:7214/Category/{id}");
+
+        public async Task<HttpResponseMessage> AddAsync(CreateCategoryDto category)
+            => await _http.PostAsJsonAsync("https://localhost:7214/Category", category);
+
+        public async Task<HttpResponseMessage> UpdateAsync(int id, UpdateCategoryDto category)
+            => await _http.PutAsJsonAsync($"https://localhost:7214/Category/{id}", category);
+
+        public async Task<HttpResponseMessage> DeleteAsync(int id)
+            => await _http.DeleteAsync($"https://localhost:7214/Category/{id}");
+    }
+
+}

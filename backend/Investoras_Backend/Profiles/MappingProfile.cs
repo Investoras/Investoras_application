@@ -1,9 +1,12 @@
 ﻿namespace Investoras_Backend;
 // Profiles/MappingProfile.cs
 using AutoMapper;
-using Investoras_Backend.Data.Dto;
 using Investoras_Backend.Data.Entities;
 using Investoras_Backend.Data.Models;
+using ClassLibrary.Dto.User;
+using ClassLibrary.Dto.Transaction;
+using ClassLibrary.Dto.Account;
+using ClassLibrary.Dto.Category;
 
 public class MappingProfile : Profile
 {
@@ -24,14 +27,22 @@ public class MappingProfile : Profile
         CreateMap<TransactionModel, UpdateTransactionDto>();
         CreateMap<TransactionDto, TransactionModel>();
         CreateMap<Transaction, TransactionModel>();
+        CreateMap<Transaction, TransactionDto>()
+            .ForMember(dest => dest.IsIncome, opt => opt.MapFrom(src => src.Category != null && src.Category.IsIncome));
 
         CreateMap<CreateAccountDto, AccountModel>();
         CreateMap<UpdateAccountDto, AccountModel>();
         CreateMap<UpdateAccountDto, Account>();
-        CreateMap<AccountModel, Account>();
+        //CreateMap<AccountModel, Account>();
         CreateMap<AccountModel, UpdateAccountDto>();
-        CreateMap<AccountDto, AccountModel>();
+        //CreateMap<AccountDto, AccountModel>();
         CreateMap<Account, AccountModel>();
+        CreateMap<Account, AccountDto>();
+        CreateMap<AccountDto, AccountModel>()
+            .ConstructUsing(dto => AccountModel.Create(dto.Name, dto.Balance, dto.UserId));
+        CreateMap<AccountModel, Account>()
+            .ForMember(dest => dest.AccountId, opt => opt.Ignore());
+
 
         CreateMap<CreateCategoryDto, CategoryModel>();
         CreateMap<UpdateCategoryDto, CategoryModel>();

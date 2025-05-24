@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using ClassLibrary.Dto;
 using BlazorApp.Services;
+using ClassLibrary.Dto.Transaction;
 
 
 namespace BlazorApp.Pages

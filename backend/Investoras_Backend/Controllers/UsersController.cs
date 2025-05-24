@@ -1,7 +1,10 @@
-﻿using Investoras_Backend.Data.Dto;
+﻿using ClassLibrary.Dto;
+using ClassLibrary.Dto.User;
 using Investoras_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
+using Investoras_Backend.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Investoras_Backend.Controllers;
 
@@ -10,11 +13,14 @@ namespace Investoras_Backend.Controllers;
 public class UserController : ControllerBase
 {
     private IUserService _userService;
+    private readonly ITokenService _tokenService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, ITokenService tokenService)
     {
         _userService = userService;
+        _tokenService = tokenService;
     }
+
     [HttpGet("All")]
     public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
     {
@@ -38,6 +44,9 @@ public class UserController : ControllerBase
     [Route("{id:int}")]
     public async Task<IActionResult> UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
             await _userService.UpdateUser(id, userDto, cancellationToken);
@@ -47,7 +56,12 @@ public class UserController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { errors = new { Username = new[] { ex.Message } } });
+        }
     }
+
     [HttpDelete]
     [Route("{id:int}")]
     public async Task<IActionResult> DeleteUser(int id, CancellationToken cancellationToken)
@@ -64,13 +78,37 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(UserDto userDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login(LoginUserDto userDto, CancellationToken cancellationToken)
     {
-        var user = await _userService.LoginUser(userDto, cancellationToken);
-        if (user == null)
-            return Unauthorized();
-        return Ok(user);
+        try
+        {
+            var userModel = await _userService.LoginUser(userDto, cancellationToken);
+
+            var userEntity = new User
+            {
+                UserId = userModel.UserId,
+                Username = userModel.Username,
+                Email = userModel.Email
+            };
+
+            var token = _tokenService.GenerateToken(userEntity);
+
+            var response = new AuthResponseDto
+            {
+                Token = token,
+                UserId = userModel.UserId,
+                Username = userModel.Username,
+                Email = userModel.Email
+            };
+
+            return Ok(response);
+        }
+        catch (NotFoundException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
     }
+
 }
 
 

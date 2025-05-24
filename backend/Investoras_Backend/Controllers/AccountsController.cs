@@ -1,4 +1,4 @@
-﻿using Investoras_Backend.Data.Dto;
+﻿using ClassLibrary.Dto.Account;
 using Investoras_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
@@ -21,6 +21,7 @@ public class AccountController : ControllerBase
         var allAccounts = await _accountService.GetAllAccounts(cancellationToken);
         return Ok(allAccounts);
     }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAccountById(int id, CancellationToken cancellationToken)
     {

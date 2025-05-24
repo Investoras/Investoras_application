@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Investoras_Backend.Data;
-using Investoras_Backend.Data.Dto;
+using ClassLibrary.Dto.User;
 using Investoras_Backend.Data.Entities;
 using Investoras_Backend.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Errors.Model;
 using System.ComponentModel.DataAnnotations;
+using ClassLibrary.Dto;
 
 namespace Investoras_Backend.Services;
 
@@ -16,16 +17,18 @@ public interface IUserService
     Task<UserModel> CreateUser(CreateUserDto userDto, CancellationToken cancellationToken);
     Task UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken);
     Task DeleteUser(int id, CancellationToken cancellationToken);
-    Task<UserModel> LoginUser(UserDto userDto, CancellationToken cancellationToken);
+    Task<AuthResponseDto> LoginUser(LoginUserDto userDto, CancellationToken cancellationToken);
 }
 public class UserService : IUserService
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
-    public UserService(ApplicationDbContext context, IMapper mapper)
+    private readonly ITokenService _tokenService;
+    public UserService(ApplicationDbContext context, IMapper mapper, ITokenService tokenService)
     {
         _context = context;
         _mapper = mapper;
+        _tokenService = tokenService;
     }
     public async Task<UserModel> CreateUser(CreateUserDto userDto, CancellationToken cancellationToken)
     {
@@ -62,33 +65,45 @@ public class UserService : IUserService
         return _mapper.Map<UserModel>(user);
     }
 
-    public async Task<UserModel> LoginUser(UserDto userDto, CancellationToken cancellationToken)
+    public async Task<AuthResponseDto> LoginUser(LoginUserDto userDto, CancellationToken cancellationToken)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Username == userDto.Username);
+
         if (user == null) throw new NotFoundException("Пользователь не найден");
+
         if (!UserModel.VerifyPassword(userDto.Password, user.Password))
             throw new NotFoundException("Неправильный пароль");
-        return _mapper.Map<UserModel>(user);
+
+        var userModel = _mapper.Map<UserModel>(user);
+        var token = _tokenService.GenerateToken(user);
+
+        return new AuthResponseDto
+        {
+            Token = token,
+            UserId = user.UserId,
+            Username = user.Username,
+            Email = user.Email
+        };
     }
 
     public async Task UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken)
     {
         bool usernameExists = await _context.Users
-        .AnyAsync(u => u.Username == userDto.Username);
+            .AnyAsync(u => u.Username == userDto.Username && u.UserId != id);
         if (usernameExists)
-        {
             throw new ValidationException("Имя пользователя уже занято.");
-        }
-        var user = await _context.Users.FindAsync(id, cancellationToken);
+
+        var user = await _context.Users.FindAsync(new object[] { id }, cancellationToken);
         if (user == null) throw new NotFoundException("Пользователь не найден");
 
-        var userModel = _mapper.Map<UserModel>(user);
-        
-        _mapper.Map(userDto, userModel);
-        _mapper.Map(userModel, user);
+        _mapper.Map(userDto, user);
 
-        user.Password = UserModel.HashPassword(user.Password);
+        if (!string.IsNullOrWhiteSpace(userDto.Password))
+        {
+            user.Password = UserModel.HashPassword(userDto.Password);
+        }
+
         await _context.SaveChangesAsync(cancellationToken);
     }
 }
