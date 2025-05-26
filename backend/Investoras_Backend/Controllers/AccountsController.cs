@@ -1,7 +1,10 @@
 ﻿using ClassLibrary.Dto.Account;
+using ClassLibrary.Models;
 using Investoras_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
+using System.ComponentModel.DataAnnotations;
+using Investoras_Backend.Exceptions;
 
 namespace Investoras_Backend.Controllers;
 
@@ -33,15 +36,37 @@ public class AccountController : ControllerBase
     [HttpGet("Balance/{id:int}")]
     public async Task<IActionResult> GetBalance(int id, CancellationToken cancellationToken)
     {
-        var balance = await _accountService.GetTotalBalanceById(id, cancellationToken);
-        return Ok(balance);
+        try
+        {
+            var balance = await _accountService.GetTotalBalanceById(id, cancellationToken);
+            return Ok(balance);
+        }
+        catch(NotFoundException ex)
+        {
+            return NotFound(ex);
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> AddAccount(CreateAccountDto accountDto, CancellationToken cancellationToken)
     {
-        var account = await _accountService.CreateAccount(accountDto, cancellationToken);
-        return CreatedAtAction(nameof(GetAccountById), new { id = account.AccountId }, account);
+        try
+        {
+            var account = await _accountService.CreateAccount(accountDto, cancellationToken);
+            return CreatedAtAction(nameof(GetAccountById), new { id = account.AccountId }, account);
+        }
+        catch (Exceptions.ValidationException ex)
+        {
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return BadRequest(ModelState);
+        }
     }
     [HttpPut]
     [Route("{id:int}")]
@@ -52,9 +77,21 @@ public class AccountController : ControllerBase
             await _accountService.UpdateAccount(id, accountDto, cancellationToken);
             return NoContent();
         }
-        catch (NotFoundException ex)
+        catch (Exceptions.ValidationException ex)
         {
-            return NotFound(ex.Message);
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return NotFound(ModelState);
+        }
+        catch(NotFoundException ex)
+        {
+            return NotFound(ex);
         }
     }
     [HttpDelete]

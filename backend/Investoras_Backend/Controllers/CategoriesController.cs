@@ -31,8 +31,23 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddCategory(CreateCategoryDto categoryDto, CancellationToken cancellationToken)
     {
-        var category = await _categoryService.CreateCategory(categoryDto, cancellationToken);
-        return CreatedAtAction(nameof(GetCategoryById), new { id = category.CategoryId }, category);
+        try
+        {
+            var category = await _categoryService.CreateCategory(categoryDto, cancellationToken);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = category.CategoryId }, category);
+        }
+        catch (Exceptions.ValidationException ex)
+        {
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return BadRequest(ModelState);
+        }
     }
     [HttpPut]
     [Route("{id:int}")]
@@ -42,6 +57,18 @@ public class CategoryController : ControllerBase
         {
             await _categoryService.UpdateCategory(id, categoryDto, cancellationToken);
             return NoContent();
+        }
+        catch (Exceptions.ValidationException ex)
+        {
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return BadRequest(ModelState);
         }
         catch (NotFoundException ex)
         {

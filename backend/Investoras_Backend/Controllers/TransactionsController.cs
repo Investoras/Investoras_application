@@ -36,22 +36,50 @@ public class TransactionController : ControllerBase
     [HttpGet("Expenses/{id:int}")]
     public async Task<IActionResult> GetSumOfExpensesByAccountId(int id, CancellationToken cancellationToken)
     {
-        var expenses = await _transactionService.GetSumOfExpensesByAccountId(id, cancellationToken);
-        return Ok(expenses);
+        try
+        {
+            var expenses = await _transactionService.GetSumOfExpensesByAccountId(id, cancellationToken);
+            return Ok(expenses);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex);
+        }
     }
 
     [HttpGet("Incomes/{id:int}")]
     public async Task<IActionResult> GetSumOfIncomeByAccountId(int id, CancellationToken cancellationToken)
     {
+        try { 
         var expenses = await _transactionService.GetSumOfIncomeByAccountId(id, cancellationToken);
         return Ok(expenses);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex);
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> AddTransaction(CreateTransactionDto transactionDto, CancellationToken cancellationToken)
     {
-        var transaction = await _transactionService.CreateTransaction(transactionDto, cancellationToken);
-        return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.TransactionId }, transaction);
+        try
+        {
+            var transaction = await _transactionService.CreateTransaction(transactionDto, cancellationToken);
+            return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.TransactionId }, transaction);
+        }
+        catch (Exceptions.ValidationException ex)
+        {
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return BadRequest(ModelState);
+        }
     }
     [HttpPut]
     [Route("{id:int}")]
@@ -62,9 +90,21 @@ public class TransactionController : ControllerBase
             await _transactionService.UpdateTransaction(id, transactionDto, cancellationToken);
             return NoContent();
         }
+        catch (Exceptions.ValidationException ex)
+        {
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return NotFound(ModelState);
+        }
         catch (NotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return NotFound(ex);
         }
     }
     [HttpDelete]
@@ -84,13 +124,25 @@ public class TransactionController : ControllerBase
     [HttpGet("LastFive/{id:int}")]
     public async Task<IActionResult> GetLastFiveTransactionsByAccountId(int id, CancellationToken cancellationToken)
     {
+        try { 
         var allTransactions = await _transactionService.GetLastFiveTransactionsByAccountId(id,cancellationToken);
         return Ok(allTransactions);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex);
+        }
     }
     [HttpGet("AllByAccountId/{id:int}")]
     public async Task<IActionResult> GetAllTransactionsByAccoutnId(int id, CancellationToken cancellationToken)
     {
+        try { 
         var allTransactions = await _transactionService.GetAllTransactionsByAccoutnId(id, cancellationToken);
         return Ok(allTransactions);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex);
+        }
     }
 }

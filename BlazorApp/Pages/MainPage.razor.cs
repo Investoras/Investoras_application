@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
-using ClassLibrary.Dto;
+using ClassLibrary.Dto.Category;
 using BlazorApp.Services;
-<<<<<<< HEAD
 using ClassLibrary.Dto.Transaction;
-=======
 using ChartJs.Blazor.Common;
 using ChartJs.Blazor.PieChart;
 using ChartJs.Blazor.Util;
 using System.Globalization;
->>>>>>> _piechart
 
 
 namespace BlazorApp.Pages
@@ -31,7 +28,7 @@ namespace BlazorApp.Pages
             .Take(5)
             .ToList();
 
-        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionDto { Date = DateTime.Now });
+        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionDto);
         protected void HideAddTransactionModal() => showAddModal = false;
 
         protected async Task AddTransaction()
