@@ -17,6 +17,7 @@ else
                 <th>Name</th>
                 <th>Balance</th>
                 <th>UserId</th>
+                <th>CreatedAt</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -28,6 +29,7 @@ else
                     <td>@account.Name</td>
                     <td>@account.Balance</td>
                     <td>@account.UserId</td>
+                    <td>@account.CreatedAt</td>
                     <td style="white-space:nowrap">
                         <a class="btn btn-primary btn-sm" href="/Accounts/UpdateAccount/@account.AccountId">Update</a>
                         <a class="btn btn-danger btn-sm" href="/Accounts/DeleteAccount/@account.AccountId">Delete</a>

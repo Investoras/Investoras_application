@@ -15,5 +15,7 @@ namespace ClassLibrary.Models
         public decimal Balance { get;  set; }
         public int UserId { get;  set; }
 
+        public DateTime CreatedAt { get; set; }
+
     }
 }
