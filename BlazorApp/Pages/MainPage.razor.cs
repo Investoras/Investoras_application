@@ -31,7 +31,7 @@ namespace BlazorApp.Pages
             .Take(5)
             .ToList();
 
-        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionDto { Date = DateTime.Now });
+        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionDto { });
         protected void HideAddTransactionModal() => showAddModal = false;
 
         protected async Task AddTransaction()

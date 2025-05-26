@@ -80,23 +80,12 @@
         <div class="modal-content">
             <h3>Добавить новую транзакцию</h3>
             <div class="form-group">
-                <label>Тип:</label>
-                <select @bind="newTransaction.IsIncome">
-                    <option value="true">Доход</option>
-                    <option value="false">Расход</option>
-                </select>
-            </div>
-            <div class="form-group">
                 <label>Сумма:</label>
                 <input type="number" @bind="newTransaction.Amount" />
             </div>
             <div class="form-group">
                 <label>Описание:</label>
                 <input type="text" @bind="newTransaction.Description" />
-            </div>
-            <div class="form-group">
-                <label>Дата:</label>
-                <input type="date" @bind="newTransaction.Date" />
             </div>
             <div class="modal-actions">
                 <button @onclick="AddTransaction">Добавить</button>
