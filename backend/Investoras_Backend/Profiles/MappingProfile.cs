@@ -2,7 +2,7 @@
 // Profiles/MappingProfile.cs
 using AutoMapper;
 using Investoras_Backend.Data.Entities;
-using Investoras_Backend.Data.Models;
+using ClassLibrary.Models;
 using ClassLibrary.Dto.User;
 using ClassLibrary.Dto.Transaction;
 using ClassLibrary.Dto.Account;
@@ -19,6 +19,7 @@ public class MappingProfile : Profile
         CreateMap<UserModel, UpdateUserDto>();
         CreateMap<UserDto, UserModel>();
         CreateMap<User, UserModel>();
+        CreateMap<User, UserDto>();
 
         CreateMap<CreateTransactionDto, TransactionModel>();
         CreateMap<UpdateTransactionDto, TransactionModel>();
@@ -38,10 +39,8 @@ public class MappingProfile : Profile
         //CreateMap<AccountDto, AccountModel>();
         CreateMap<Account, AccountModel>();
         CreateMap<Account, AccountDto>();
-        CreateMap<AccountDto, AccountModel>()
-            .ConstructUsing(dto => AccountModel.Create(dto.Name, dto.Balance, dto.UserId));
-        CreateMap<AccountModel, Account>()
-            .ForMember(dest => dest.AccountId, opt => opt.Ignore());
+        CreateMap<AccountDto, AccountModel>();
+        CreateMap<AccountModel, Account>();
 
 
         CreateMap<CreateCategoryDto, CategoryModel>();
@@ -51,5 +50,6 @@ public class MappingProfile : Profile
         CreateMap<CategoryModel, UpdateCategoryDto>();
         CreateMap<CategoryDto, CategoryModel>();
         CreateMap<Category, CategoryModel>();
+        CreateMap<Category, CategoryDto>();
     }
 }

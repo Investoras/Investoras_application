@@ -37,28 +37,48 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddUser(CreateUserDto userDto, CancellationToken cancellationToken)
     {
-        var user = await _userService.CreateUser(userDto, cancellationToken);
-        return CreatedAtAction(nameof(GetUserById), new { id = user.UserId }, user);
+        try
+        {
+            var user = await _userService.CreateUser(userDto, cancellationToken);
+            return CreatedAtAction(nameof(GetUserById), new { id = user.UserId }, user);
+        }
+        catch (Exceptions.ValidationException ex)
+        {
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return BadRequest(ModelState);
+        }
     }
     [HttpPut]
     [Route("{id:int}")]
     public async Task<IActionResult> UpdateUser(int id, UpdateUserDto userDto, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         try
         {
             await _userService.UpdateUser(id, userDto, cancellationToken);
             return NoContent();
         }
-        catch (NotFoundException ex)
+        catch (Exceptions.ValidationException ex)
         {
-            return NotFound(ex.Message);
+            // Преобразуем исключение в ModelState
+            foreach (var error in ex.Errors)
+            {
+                foreach (var message in error.Value)
+                {
+                    ModelState.AddModelError(error.Key, message);
+                }
+            }
+            return NotFound(ModelState);
         }
-        catch (ValidationException ex)
+        catch(ValidationException ex)
         {
-            return BadRequest(new { errors = new { Username = new[] { ex.Message } } });
+            return BadRequest(ex);
         }
     }
 
@@ -88,7 +108,7 @@ public class UserController : ControllerBase
             {
                 UserId = userModel.UserId,
                 Username = userModel.Username,
-                Email = userModel.Email
+                Email = userModel.Email,
             };
 
             var token = _tokenService.GenerateToken(userEntity);
