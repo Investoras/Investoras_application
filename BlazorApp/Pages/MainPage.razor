@@ -33,12 +33,14 @@
             <div class="chart-section">
                 <h2 style="text-align:center">График расходов</h2>
                 <div class="chart-container">
-                    <Chart
-                    Width="400"
-                    Height="200"
-                    Config="_pieConfig"
-                    @ref="_pieChart">
-                    </Chart>
+                    @if (_pieConfig != null)
+                    {
+                        <Chart Width="400"
+                               Height="200"
+                               Config="_pieConfig"
+                               @ref="_pieChart">
+                        </Chart>
+                    }
                     <canvas id="financeChart" width="400" height="200"></canvas>
                 </div>
             </div>
@@ -102,9 +104,4 @@
             </div>
         </div>
     </div>
-}
-
-@code {
-    private Chart _pieChart;
-    private PieConfig _pieConfig;
 }

@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
-using ClassLibrary.Dto;
+using ClassLibrary.Dto.Transaction;
+using ClassLibrary.Dto.Category;
 using BlazorApp.Services;
 using ChartJs.Blazor.Common;
 using ChartJs.Blazor.PieChart;
 using ChartJs.Blazor.Util;
 using System.Globalization;
+using ChartJs.Blazor;
 
 
 namespace BlazorApp.Pages
@@ -18,6 +20,8 @@ namespace BlazorApp.Pages
         protected List<CategoryDto> categories = new();
         protected CreateTransactionDto newTransaction = new();
         protected bool showAddModal = false;
+        protected Chart? _pieChart;
+        protected PieConfig? _pieConfig;
 
         protected decimal TotalIncome => transactions.Where(t => t.IsIncome).Sum(t => t.Amount);
         protected decimal TotalExpense => transactions.Where(t => !t.IsIncome).Sum(t => t.Amount);
@@ -40,7 +44,7 @@ namespace BlazorApp.Pages
         protected override async Task OnInitializedAsync()
         {
             transactions = await TransactionService.GetTransactionsAsync();
-            categories = await CategoryService.GetCategoriesAsync();
+            categories = await CategoryService.GetAllAsync();
 
             _pieConfig = new PieConfig
             {

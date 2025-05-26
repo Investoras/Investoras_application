@@ -20,7 +20,7 @@ namespace BlazorApp.Services
             => await _http.GetFromJsonAsync<AccountDto>($"https://localhost:7214/Account/{id}");
 
         public async Task<decimal> GetBalanceAsync(int id) 
-            => await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Account/Balance?id={id}");
+            => await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Account/Balance/{id}");
 
         public async Task<HttpResponseMessage> AddAccountAsync(CreateAccountDto dto)
             => await _http.PostAsJsonAsync("https://localhost:7214/Account", dto);

@@ -27,7 +27,7 @@ namespace BlazorApp.Services
         }
         public async Task<List<TransactionDto>> GetLastFiveAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/LastFive?id={accountId}");
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/LastFive/{accountId}");
         }
         // something like
         //public async Task<List<TransactionDto>> GetLastFiveAsync()
@@ -41,18 +41,18 @@ namespace BlazorApp.Services
 
         public async Task<List<TransactionDto>> GetAllByAccountIdAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/AllByAccountId?id={accountId}");
+            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/AllByAccountId/{accountId}");
         }
 
 
         public async Task<decimal> GetExpensesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Expenses?id={accountId}");
+            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Expenses/{accountId}");
         }
 
         public async Task<decimal> GetIncomesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Incomes?id={accountId}");
+            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Incomes/{accountId}");
         }
 
 

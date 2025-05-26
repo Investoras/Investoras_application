@@ -49,9 +49,9 @@ namespace BlazorApp.Pages.Category
                     Errors = jsonResponse?["errors"] ?? new JsonObject();
 
                 }
-                catch (Exception ex)
+                catch
                 {
-
+                    Console.WriteLine("Category save error.");
                 }
             }
 

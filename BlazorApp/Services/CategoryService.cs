@@ -14,9 +14,9 @@ namespace BlazorApp.Services
             _http = http;
         }
 
-        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
-            => await _http.GetFromJsonAsync<IEnumerable<CategoryDto>>("https://localhost:7214/Category/All")
-               ?? Enumerable.Empty<CategoryDto>();
+        public async Task<List<CategoryDto>> GetAllAsync()
+            => await _http.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7214/Category/All")
+               ?? new List<CategoryDto>();
 
         public async Task<CategoryDto?> GetByIdAsync(int id)
             => await _http.GetFromJsonAsync<CategoryDto>($"https://localhost:7214/Category/{id}");
