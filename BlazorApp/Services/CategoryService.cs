@@ -1,5 +1,7 @@
 ﻿using ClassLibrary.Dto.Category;
 using System.Net.Http.Json;
+using ClassLibrary.Dto;
+
 
 namespace BlazorApp.Services
 {
@@ -27,6 +29,6 @@ namespace BlazorApp.Services
 
         public async Task<HttpResponseMessage> DeleteAsync(int id)
             => await _http.DeleteAsync($"https://localhost:7214/Category/{id}");
-    }
+        }
 
 }

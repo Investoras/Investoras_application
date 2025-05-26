@@ -58,19 +58,19 @@ namespace BlazorApp.Services
 
         public async Task AddTransactionAsync(CreateTransactionDto dto)
         {
-            var response = await _http.PostAsJsonAsync("Transaction", dto);
+            var response = await _http.PostAsJsonAsync("https://localhost:7214/Transaction", dto);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task UpdateTransactionAsync(int id, UpdateTransactionDto dto)
         {
-            var response = await _http.PutAsJsonAsync($"Transaction/{id}", dto);
+            var response = await _http.PutAsJsonAsync($"https://localhost:7214/Transaction/{id}", dto);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task DeleteTransactionAsync(int id)
         {
-            var response = await _http.DeleteAsync($"Transaction/{id}");
+            var response = await _http.DeleteAsync($"https://localhost:7214/Transaction/{id}");
             response.EnsureSuccessStatusCode();
         }
     }

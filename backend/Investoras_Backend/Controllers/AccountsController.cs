@@ -30,7 +30,7 @@ public class AccountController : ControllerBase
         return Ok(account);
     }
 
-    [HttpGet("Balance")]
+    [HttpGet("Balance/{id:int}")]
     public async Task<IActionResult> GetBalance(int id, CancellationToken cancellationToken)
     {
         var balance = await _accountService.GetTotalBalanceById(id, cancellationToken);
