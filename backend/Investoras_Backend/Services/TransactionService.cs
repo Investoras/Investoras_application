@@ -40,7 +40,7 @@ public class TransactionService : ITransactionService
              Amount = transactionDto.Amount,
              CategoryId = transactionDto.CategoryId,
              Description = transactionDto.Description,
-             Date = DateTime.UtcNow
+             Date = transactionDto.Date
              
         };
 
@@ -132,7 +132,8 @@ public class TransactionService : ITransactionService
             AccountId = transactionDto.AccountId,
             Amount = transactionDto.Amount,
             CategoryId = transactionDto.CategoryId,
-            Description = transactionDto.Description
+            Description = transactionDto.Description,
+            Date = transactionDto.Date
         };
 
         var validationContext = new ValidationContext(transactionModel);
@@ -157,7 +158,6 @@ public class TransactionService : ITransactionService
         var transaction = await _context.Transactions.FindAsync(id);
         if (transaction == null) throw new NotFoundException("Транзакция не найдена");
         transactionModel.TransactionId = transaction.TransactionId;
-        transactionModel.Date = transaction.Date;
 
         _mapper.Map(transactionModel, transaction);
         await _context.SaveChangesAsync(cancellationToken);
