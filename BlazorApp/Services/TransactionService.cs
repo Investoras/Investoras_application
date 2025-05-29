@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using ClassLibrary.Dto.Transaction;
-
+using ClassLibrary.Dto.Category;
+using BlazorApp.Models;
 
 namespace BlazorApp.Services
 {
@@ -8,71 +9,98 @@ namespace BlazorApp.Services
     {
         private readonly HttpClient _http;
         private readonly IAuthService _authService;
+        private readonly ICategoryService _categoryService;
 
-        public TransactionService(HttpClient http, IAuthService authService)
+        public TransactionService(HttpClient http, IAuthService authService, ICategoryService categoryService)
         {
             _http = http;
             _authService = authService;
+            _categoryService = categoryService;
         }
 
-
-        public async Task<List<TransactionDto>> GetTransactionsAsync()
+        public async Task<List<TransactionModel>> GetTransactionsAsync()
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>("https://localhost:7214/Transaction/All");
+            var dtos = await _http.GetFromJsonAsync<List<TransactionDto>>("Transaction/All")
+                       ?? new List<TransactionDto>();
+
+            var categories = await _categoryService.GetAllAsync();
+            var categoryDict = categories.ToDictionary(c => c.CategoryId);
+
+            return dtos.Select(dto =>
+            {
+                categoryDict.TryGetValue(dto.CategoryId, out var category);
+                return dto.ToModel(category);
+            }).ToList();
         }
 
-        public async Task<TransactionDto> GetByIdAsync(int id)
+        public async Task<TransactionModel> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<TransactionDto>($"https://localhost:7214/Transaction/{id}");
+            var dto = await _http.GetFromJsonAsync<TransactionDto>($"Transaction/{id}");
+            if (dto == null) throw new Exception("Transaction not found");
+
+            var category = await _categoryService.GetByIdAsync(dto.CategoryId);
+            return dto.ToModel(category);
         }
-        public async Task<List<TransactionDto>> GetLastFiveAsync(int accountId)
+
+        public async Task<List<TransactionModel>> GetLastFiveAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/LastFive/{accountId}");
+            var dtos = await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/LastFive/{accountId}")
+                       ?? new List<TransactionDto>();
+
+            var categories = await _categoryService.GetAllAsync();
+            var categoryDict = categories.ToDictionary(c => c.CategoryId);
+
+            return dtos.Select(dto =>
+            {
+                categoryDict.TryGetValue(dto.CategoryId, out var category);
+                return dto.ToModel(category);
+            }).ToList();
         }
-        // something like
-        //public async Task<List<TransactionDto>> GetLastFiveAsync()
-        //{
-        //    if (_authService.UserId == null)
-        //        throw new InvalidOperationException("User is not authenticated.");
 
-        //    return await _http.GetFromJsonAsync<List<TransactionDto>>(
-        //        $"https://localhost:7214/Transaction/LastFive?id={_authService.UserId}");
-        //}
-
-        public async Task<List<TransactionDto>> GetAllByAccountIdAsync(int accountId)
+        public async Task<List<TransactionModel>> GetAllByAccountIdAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<List<TransactionDto>>($"https://localhost:7214/Transaction/AllByAccountId/{accountId}");
-        }
+            var dtos = await _http.GetFromJsonAsync<List<TransactionDto>>($"Transaction/AllByAccountId/{accountId}")
+                       ?? new List<TransactionDto>();
 
+            var categories = await _categoryService.GetAllAsync();
+            var categoryDict = categories.ToDictionary(c => c.CategoryId);
+
+            return dtos.Select(dto =>
+            {
+                categoryDict.TryGetValue(dto.CategoryId, out var category);
+                return dto.ToModel(category);
+            }).ToList();
+        }
 
         public async Task<decimal> GetExpensesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Expenses/{accountId}");
+            return await _http.GetFromJsonAsync<decimal>($"Transaction/Expenses/{accountId}");
         }
 
         public async Task<decimal> GetIncomesAsync(int accountId)
         {
-            return await _http.GetFromJsonAsync<decimal>($"https://localhost:7214/Transaction/Incomes/{accountId}");
+            return await _http.GetFromJsonAsync<decimal>($"Transaction/Incomes/{accountId}");
         }
 
-
-        public async Task AddTransactionAsync(CreateTransactionDto dto)
+        public async Task AddTransactionAsync(TransactionModel model)
         {
-            var response = await _http.PostAsJsonAsync("https://localhost:7214/Transaction", dto);
+            CreateTransactionDto dto = model.ToCreateDto();
+            var response = await _http.PostAsJsonAsync("Transaction", dto);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UpdateTransactionAsync(int id, UpdateTransactionDto dto)
+        public async Task<HttpResponseMessage> UpdateTransactionAsync(int id, TransactionModel model)
         {
-            var response = await _http.PutAsJsonAsync($"https://localhost:7214/Transaction/{id}", dto);
-            response.EnsureSuccessStatusCode();
+            UpdateTransactionDto dto = model.ToUpdateDto();
+            return await _http.PutAsJsonAsync($"Transaction/{id}", dto);
         }
 
         public async Task DeleteTransactionAsync(int id)
         {
-            var response = await _http.DeleteAsync($"https://localhost:7214/Transaction/{id}");
+            var response = await _http.DeleteAsync($"Transaction/{id}");
             response.EnsureSuccessStatusCode();
         }
-    }
 
+
+    }
 }

@@ -2,11 +2,13 @@
 using ClassLibrary.Dto.Transaction;
 using ClassLibrary.Dto.Category;
 using BlazorApp.Services;
+using BlazorApp.Models;
 using ChartJs.Blazor.Common;
 using ChartJs.Blazor.PieChart;
 using ChartJs.Blazor.Util;
 using System.Globalization;
 using ChartJs.Blazor;
+using ClassLibrary.Dto.Account;
 
 
 namespace BlazorApp.Pages
@@ -15,10 +17,12 @@ namespace BlazorApp.Pages
     {
         [Inject] private ITransactionService TransactionService { get; set; } = default!;
         [Inject] private ICategoryService CategoryService { get; set; } = default!;
+        [Inject] private IAccountService AccountService { get; set; } = default!;
 
-        protected List<TransactionDto> transactions = new();
+        protected List<TransactionModel> transactions = new();
         protected List<CategoryDto> categories = new();
-        protected CreateTransactionDto newTransaction = new();
+        protected List<AccountDto> accounts = new();
+        protected TransactionModel newTransaction = new();
         protected bool showAddModal = false;
         protected Chart? _pieChart;
         protected PieConfig? _pieConfig;
@@ -26,26 +30,35 @@ namespace BlazorApp.Pages
         protected decimal TotalIncome => transactions.Where(t => t.IsIncome).Sum(t => t.Amount);
         protected decimal TotalExpense => transactions.Where(t => !t.IsIncome).Sum(t => t.Amount);
         protected decimal Balance => TotalIncome - TotalExpense;
-        protected List<TransactionDto> RecentTransactions => transactions
-            .OrderByDescending(t => t.Date)
-            .Take(5)
-            .ToList();
+        protected List<TransactionModel> RecentTransactions =>
+            transactions.OrderByDescending(t => t.Date).Take(5).ToList();
 
-        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionDto { });
+        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new TransactionModel { });
         protected void HideAddTransactionModal() => showAddModal = false;
 
         protected async Task AddTransaction()
         {
             await TransactionService.AddTransactionAsync(newTransaction);
-            transactions = await TransactionService.GetTransactionsAsync();
+            await LoadTransactions();
             showAddModal = false;
         }
 
         protected override async Task OnInitializedAsync()
         {
-            transactions = await TransactionService.GetTransactionsAsync();
+            accounts = await AccountService.GetAllAccountsAsync();
             categories = await CategoryService.GetAllAsync();
+            await LoadTransactions();
+            SetupPieChart();
+        }
 
+        private async Task LoadTransactions()
+        {
+            transactions = await TransactionService.GetTransactionsAsync();
+        }
+
+
+        private void SetupPieChart()
+        {
             _pieConfig = new PieConfig
             {
                 Options = new PieOptions

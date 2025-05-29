@@ -12,8 +12,7 @@ public partial class ListTransaction
     private List<TransactionDto>? transactions;
 
     protected override async Task OnInitializedAsync()
-    //protected async Task OnInitializedAsync()
     {
-        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("https://localhost:7214/Transaction/All");
+        transactions = await Http.GetFromJsonAsync<List<TransactionDto>>("Transaction/All");
     }
 }

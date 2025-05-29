@@ -14,7 +14,7 @@ namespace BlazorApp.Pages.User
 
         protected async Task SaveUser()
         {
-            var response = await Http.PostAsJsonAsync("https://localhost:7214/User", UserData);
+            var response = await Http.PostAsJsonAsync("User", UserData);
 
             if (response.IsSuccessStatusCode)
             {

@@ -9,7 +9,7 @@ namespace ClassLibrary.Dto.Account
     public class AccountDto
     {
         public int AccountId { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         public decimal Balance { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }

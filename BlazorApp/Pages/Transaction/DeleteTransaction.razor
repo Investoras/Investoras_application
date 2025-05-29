@@ -1,0 +1,7 @@
+﻿@page "/Transactions/DeleteTransaction/{Id:int}"
+
+
+<h1 class="mb-3">Delete Transaction</h1>
+<p>Are you sure want to delete Transaction with Id @Id?</p>
+<button class="btn btn-danger" @onclick="Delete_Transaction">Delete</button>
+<a class="btn btn-secondary" href="/Transactions">Cancel</a>

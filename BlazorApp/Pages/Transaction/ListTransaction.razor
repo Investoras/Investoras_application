@@ -18,6 +18,7 @@ else
                 <th>Description</th>
                 <th>AccountId</th>
                 <th>CategoryId</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -30,9 +31,13 @@ else
                     <td>@transaction.Description</td>
                     <td>@transaction.AccountId</td>
                     <td>@transaction.CategoryId</td>
+                    <td style="white-space:nowrap">
+                        <a class="btn btn-primary btn-sm" href="/Transactions/UpdateTransaction/@transaction.TransactionId">Update</a>
+                        <a class="btn btn-danger btn-sm" href="/Transactions/DeleteTransaction/@transaction.TransactionId">Delete</a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 }
-<a class="btn btn-primary mb-3" href="/Transactions/AddTransaction">New Transaction</a>
+<a class="btn btn-primary mb-3" href="/Main">Back</a>

@@ -21,7 +21,7 @@ namespace BlazorApp.Pages.User
         {
             try
             {
-                user = await Http.GetFromJsonAsync<UserDto>("https://localhost:7214/User/" + Id);
+                user = await Http.GetFromJsonAsync<UserDto>("User/" + Id);
                 userData.Username = user?.Username;
                 userData.Email = user.Email;
                 userData.Password = "";
@@ -35,7 +35,7 @@ namespace BlazorApp.Pages.User
 
         protected async Task SaveUser()
         {
-            var response = await Http.PutAsJsonAsync("https://localhost:7214/User/" + Id, userData);
+            var response = await Http.PutAsJsonAsync("User/" + Id, userData);
             if (response.IsSuccessStatusCode)
             {
                 NavigationManager.NavigateTo("/Users");

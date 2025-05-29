@@ -17,7 +17,7 @@ namespace BlazorApp.Pages.Authorization
         private async Task HandleRegister()
         {
             RegisterModel.CreatedAt = DateTime.UtcNow;
-            var response = await Http.PostAsJsonAsync("https://localhost:7214/User", RegisterModel);
+            var response = await Http.PostAsJsonAsync("User", RegisterModel);
 
             if (response.IsSuccessStatusCode)
             {

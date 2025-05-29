@@ -15,20 +15,20 @@ namespace BlazorApp.Services
         }
 
         public async Task<List<CategoryDto>> GetAllAsync()
-            => await _http.GetFromJsonAsync<List<CategoryDto>>("https://localhost:7214/Category/All")
+            => await _http.GetFromJsonAsync<List<CategoryDto>>("Category/All")
                ?? new List<CategoryDto>();
 
         public async Task<CategoryDto?> GetByIdAsync(int id)
-            => await _http.GetFromJsonAsync<CategoryDto>($"https://localhost:7214/Category/{id}");
+            => await _http.GetFromJsonAsync<CategoryDto>($"Category/{id}");
 
         public async Task<HttpResponseMessage> AddAsync(CreateCategoryDto category)
-            => await _http.PostAsJsonAsync("https://localhost:7214/Category", category);
+            => await _http.PostAsJsonAsync("Category", category);
 
         public async Task<HttpResponseMessage> UpdateAsync(int id, UpdateCategoryDto category)
-            => await _http.PutAsJsonAsync($"https://localhost:7214/Category/{id}", category);
+            => await _http.PutAsJsonAsync($"Category/{id}", category);
 
         public async Task<HttpResponseMessage> DeleteAsync(int id)
-            => await _http.DeleteAsync($"https://localhost:7214/Category/{id}");
+            => await _http.DeleteAsync($"Category/{id}");
         }
 
 }

@@ -28,8 +28,8 @@ public class MappingProfile : Profile
         CreateMap<TransactionModel, UpdateTransactionDto>();
         CreateMap<TransactionDto, TransactionModel>();
         CreateMap<Transaction, TransactionModel>();
-        CreateMap<Transaction, TransactionDto>()
-            .ForMember(dest => dest.IsIncome, opt => opt.MapFrom(src => src.Category != null && src.Category.IsIncome));
+        CreateMap<Transaction, TransactionDto>();
+            //.ForMember(dest => dest.IsIncome, opt => opt.MapFrom(src => src.Category != null && src.Category.IsIncome));
 
         CreateMap<CreateAccountDto, AccountModel>();
         CreateMap<UpdateAccountDto, AccountModel>();

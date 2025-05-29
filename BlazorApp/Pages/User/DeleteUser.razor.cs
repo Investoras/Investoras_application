@@ -12,7 +12,7 @@ namespace BlazorApp.Pages.User
 
         protected async Task Delete_User()
         {
-            var response = await Http.DeleteAsync("https://localhost:7214/User/" + Id);
+            var response = await Http.DeleteAsync("User/" + Id);
             Navigation.NavigateTo("/Users");
         }
     }

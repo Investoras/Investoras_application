@@ -20,7 +20,7 @@ public class AuthService : IAuthService
 
     public async Task<bool> LoginAsync(LoginUserDto loginModel)
     {
-        var response = await _httpClient.PostAsJsonAsync("https://localhost:7214/User/login", loginModel);
+        var response = await _httpClient.PostAsJsonAsync("User/login", loginModel);
 
         if (response.IsSuccessStatusCode)
         {
@@ -54,7 +54,7 @@ public class AuthService : IAuthService
 
     public async Task RegisterAsync(CreateUserDto createUserDto)
     {
-        var response = await _httpClient.PostAsJsonAsync("https://localhost:7214/User", createUserDto);
+        var response = await _httpClient.PostAsJsonAsync("User", createUserDto);
 
         if (!response.IsSuccessStatusCode)
         {

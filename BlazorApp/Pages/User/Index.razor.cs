@@ -13,6 +13,6 @@ public partial class Index
 
     protected override async Task OnInitializedAsync()
     {
-        users = await Http.GetFromJsonAsync<List<UserDto>>("https://localhost:7214/User/All");
+        users = await Http.GetFromJsonAsync<List<UserDto>>("User/All");
     }
 }

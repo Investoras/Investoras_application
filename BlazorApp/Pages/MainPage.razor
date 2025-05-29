@@ -32,7 +32,7 @@
 
             <div class="chart-section">
                 <h2 style="text-align:center">График расходов</h2>
-                <div class="chart-container">
+                <div class="chart-container" style="text-align: center;">
                     @if (_pieConfig != null)
                     {
                         <Chart Width="400"
@@ -41,8 +41,15 @@
                                @ref="_pieChart">
                         </Chart>
                     }
-                    <canvas id="financeChart" width="400" height="200"></canvas>
+                    else
+                    {
+                        <div style="padding: 50px;">
+                            <p>Загрузка...</p>
+                            <canvas width="400" height="200"></canvas>
+                        </div>
+                    }
                 </div>
+
             </div>
         </div>
 
@@ -79,14 +86,39 @@
     <div class="modal">
         <div class="modal-content">
             <h3>Добавить новую транзакцию</h3>
+
             <div class="form-group">
                 <label>Сумма:</label>
                 <input type="number" @bind="newTransaction.Amount" />
             </div>
+
             <div class="form-group">
                 <label>Описание:</label>
                 <input type="text" @bind="newTransaction.Description" />
             </div>
+
+            <div class="form-group">
+                <label>Категория:</label>
+                <select @bind="newTransaction.CategoryId">
+                    <option value="">Выберите категорию</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.CategoryId">@category.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Счет:</label>
+                <select @bind="newTransaction.AccountId">
+                    <option disabled selected value="">Выберите счет</option>
+                    @foreach (var account in accounts)
+                    {
+                        <option value="@account.AccountId">@account.Name</option>
+                    }
+                </select>
+            </div>
+
             <div class="modal-actions">
                 <button @onclick="AddTransaction">Добавить</button>
                 <button @onclick="HideAddTransactionModal">Отмена</button>
