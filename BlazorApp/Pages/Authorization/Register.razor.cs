@@ -2,6 +2,7 @@
 using BlazorApp.Services;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using BlazorApp.Models.User;
 
 
 namespace BlazorApp.Pages.Authorization
@@ -12,11 +13,11 @@ namespace BlazorApp.Pages.Authorization
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private IAuthService AuthService { get; set; } = default!;
 
-        private UserDto RegisterModel = new();
+        private CreateUserModel RegisterModel = new();
 
         private async Task HandleRegister()
         {
-            RegisterModel.CreatedAt = DateTime.UtcNow;
+            //RegisterModel.CreatedAt = DateTime.UtcNow;
             var response = await Http.PostAsJsonAsync("User", RegisterModel);
 
             if (response.IsSuccessStatusCode)

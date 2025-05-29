@@ -1,0 +1,18 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlazorApp.Models.Category
+{
+    public class CreateCategoryModel
+    {
+        [Required(ErrorMessage = "Введите название категории.")]
+        [StringLength(30, ErrorMessage = "Слишком длинное название категории.")]
+        public string? Name { get; set; }
+
+        [Required(ErrorMessage = "Укажите тип категории.")]
+        public bool IsIncome { get; set; }
+
+        [Required(ErrorMessage = "Введите описание категории.")]
+        [StringLength(100, ErrorMessage = "Слишком длинное описание категории.")]
+        public string? Description { get; set; }
+    }
+}

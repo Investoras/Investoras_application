@@ -14,7 +14,7 @@ namespace BlazorApp.Pages.Transaction
         protected async Task Delete_Transaction()
         {
             await TransactionService.DeleteTransactionAsync(Id);
-            Navigation.NavigateTo("/Transactions");
+            Navigation.NavigateTo("Transactions");
         }
     }
 }

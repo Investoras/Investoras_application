@@ -4,36 +4,57 @@
 	<div class="col-lg-8">
 		<h1 class="mb-5">New Account</h1>
 
-		<div class="row mb-3">
-			<label class="col-md-4 col-form-label">Name</label>
-			<div class="col-md-8">
-				<input class="form-control" @bind="AccountData.Name" />
-			</div>
-		</div>
+		<EditForm Model="AccountData" OnValidSubmit="SaveAccount">
+			<DataAnnotationsValidator />
 
-		<div class="row mb-3">
-			<label class="col-md-4 col-form-label">Balance</label>
-			<div class="col-md-8">
-				<input class="form-control" @bind="AccountData.Balance" />
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">Name</label>
+				<div class="col-md-8">
+					<InputText class="form-control" @bind-Value="AccountData.Name" />
+					<ValidationMessage For="@(() => AccountData.Name)" />
+				</div>
 			</div>
-		</div>
 
-		<div class="row mb-3">
-			<label class="col-md-4 col-form-label">UserId</label>
-			<div class="col-md-8">
-				<input class="form-control" @bind="AccountData.UserId" />
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">Balance</label>
+				<div class="col-md-8">
+					<InputNumber class="form-control" @bind-Value="AccountData.Balance" />
+					<ValidationMessage For="@(() => AccountData.Balance)" />
+				</div>
 			</div>
-		</div>
 
-		<div class="row">
-			<div class="offset-md-4 row-cols-md-4 d-grid">
-				<button class="btn btn-primary" @onclick="SaveAccount">Submit</button>
+			<div class="row mb-3">
+				<label class="col-md-4 col-form-label">UserId</label>
+				<div class="col-md-8">
+					<InputNumber class="form-control" @bind-Value="AccountData.UserId" />
+					<ValidationMessage For="@(() => AccountData.UserId)" />
+				</div>
+			</div>
 
+			@if (ServerErrors?.Count > 0)
+			{
+				<div class="alert alert-danger">
+					<ul>
+						@foreach (var error in ServerErrors)
+						{
+							<li>@error</li>
+						}
+					</ul>
+				</div>
+			}
+
+			<div class="row">
+				<div class="offset-md-4 row-cols-md-4 d-grid">
+					<button class="btn btn-primary" @onclick="SaveAccount">Submit</button>
+
+				</div>
+				<div class="col-md-4 d-grid">
+					<a class="btn btn-outline-primary" href="/Accounts">Cancel</a>
+				</div>
 			</div>
-			<div class="col-md-4 d-grid">
-				<a class="btn btn-outline-primary" href="/Accounts">Cancel</a>
-			</div>
-		</div>
+
+		</EditForm>
+
 	</div>
 </div>
 

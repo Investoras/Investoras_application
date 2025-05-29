@@ -1,6 +1,7 @@
 ﻿using ClassLibrary.Dto.Transaction;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using BlazorApp.Models.Transaction;
 
 namespace BlazorApp.Pages.Transaction;
 

@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Text.Json.Nodes;
-using ClassLibrary.Dto.Category;
+using BlazorApp.Models.Category;
 using BlazorApp.Services;
+using BlazorApp.Models.Transaction;
+using ClassLibrary.Dto.Transaction;
+using ClassLibrary.Dto.User;
+using static System.Net.WebRequestMethods;
 
 
 namespace BlazorApp.Pages.Category
@@ -13,48 +17,47 @@ namespace BlazorApp.Pages.Category
 
         [Parameter]
         public int Id { set; get; }
-        public CategoryDto Category = null;
-        public UpdateCategoryDto CategoryData { set; get; } = new();
-        public JsonNode Errors { set; get; } = new JsonObject();
+        public CategoryModel Category = null;
+        public UpdateCategoryModel CategoryData { set; get; } = new();
+        public List<string> ServerErrors { get; set; } = new();
 
         protected override async Task OnParametersSetAsync()
         {
-            try
+            var category = await CategoryService.GetByIdAsync(Id);
+            if (category != null)
             {
-                Category = await CategoryService.GetByIdAsync(Id);
-                CategoryData.Name = Category?.Name;
-                CategoryData.IsIncome = Category.IsIncome;
-                CategoryData.Description = Category.Description;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception: " + ex.Message);
-            }
-        }
-
-
-        protected async Task SaveCategory()
-        {
-            var response = await CategoryService.UpdateAsync(Id, CategoryData);
-            if (response.IsSuccessStatusCode)
-            {
-                NavigationManager.NavigateTo("/Categories");
+                CategoryData = new UpdateCategoryModel
+                {
+                    Name = category?.Name,
+                    IsIncome = category.IsIncome,
+                    Description = category.Description
+                };
             }
             else
             {
-                var strResponse = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    var jsonResponse = JsonNode.Parse(strResponse);
-                    Errors = jsonResponse?["errors"] ?? new JsonObject();
+                ServerErrors.Add("Update error.");
+            }
+        }
 
-                }
-                catch
+        protected async Task SaveCategory()
+        {
+            ServerErrors.Clear();
+            try
+            {
+                var response = await CategoryService.UpdateAsync(Id, CategoryData);
+                if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Category save error.");
+                    NavigationManager.NavigateTo("/Categories");
+                }
+                else
+                {
+                    ServerErrors.Add("Update error.");
                 }
             }
-
+            catch
+            {
+                ServerErrors.Add("Update error.");
+            }
         }
     }
 }

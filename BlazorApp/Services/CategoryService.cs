@@ -1,7 +1,7 @@
 ﻿using ClassLibrary.Dto.Category;
 using System.Net.Http.Json;
-using ClassLibrary.Dto;
-
+using BlazorApp.Models.Category;
+using BlazorApp.Mappings;
 
 namespace BlazorApp.Services
 {
@@ -14,21 +14,34 @@ namespace BlazorApp.Services
             _http = http;
         }
 
-        public async Task<List<CategoryDto>> GetAllAsync()
-            => await _http.GetFromJsonAsync<List<CategoryDto>>("Category/All")
-               ?? new List<CategoryDto>();
-
-        public async Task<CategoryDto?> GetByIdAsync(int id)
-            => await _http.GetFromJsonAsync<CategoryDto>($"Category/{id}");
-
-        public async Task<HttpResponseMessage> AddAsync(CreateCategoryDto category)
-            => await _http.PostAsJsonAsync("Category", category);
-
-        public async Task<HttpResponseMessage> UpdateAsync(int id, UpdateCategoryDto category)
-            => await _http.PutAsJsonAsync($"Category/{id}", category);
-
-        public async Task<HttpResponseMessage> DeleteAsync(int id)
-            => await _http.DeleteAsync($"Category/{id}");
+        public async Task<List<CategoryModel>> GetAllAsync()
+        {
+            var dtos = await _http.GetFromJsonAsync<List<CategoryDto>>("Category/All")
+                       ?? new List<CategoryDto>();
+            return dtos.ToModel();
         }
 
+        public async Task<CategoryModel?> GetByIdAsync(int id)
+        {
+            var dto = await _http.GetFromJsonAsync<CategoryDto>($"Category/{id}");
+            return dto?.ToModel();
+        }
+
+        public async Task<HttpResponseMessage> AddAsync(CreateCategoryModel category)
+        {
+            var dto = category.ToDto();
+            return await _http.PostAsJsonAsync("Category", dto);
+        }
+
+        public async Task<HttpResponseMessage> UpdateAsync(int id, UpdateCategoryModel category)
+        {
+            var dto = category.ToDto();
+            return await _http.PutAsJsonAsync($"Category/{id}", dto);
+        }
+
+        public async Task<HttpResponseMessage> DeleteAsync(int id)
+        {
+            return await _http.DeleteAsync($"Category/{id}");
+        }
+    }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using ClassLibrary.Dto.Account;
 using BlazorApp.Services;
+using BlazorApp.Models.Account;
+using ClassLibrary.Dto.Category;
 
 
 namespace BlazorApp.Pages.Account
@@ -10,20 +12,26 @@ namespace BlazorApp.Pages.Account
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private IAccountService AccountService { get; set; } = default!;
 
-        public CreateAccountDto AccountData { get; set; } = new();
+        public List<string> ServerErrors { get; set; } = new();
+        public CreateAccountModel AccountData { get; set; } = new();
 
         protected async Task SaveAccount()
         {
-            var response = await AccountService.AddAccountAsync(AccountData);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                NavigationManager.NavigateTo("/Accounts");
+                var response = await AccountService.AddAccountAsync(AccountData);
+                if (response.IsSuccessStatusCode)
+                {
+                    NavigationManager.NavigateTo("/Accounts");
+                }
+                else
+                {
+                    ServerErrors.Add("Account error.");
+                }
             }
-            else
+            catch
             {
-                var strResponse = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Json Response: \n" + strResponse);
+                ServerErrors.Add("Account error.");
             }
         }
 

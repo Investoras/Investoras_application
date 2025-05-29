@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using ClassLibrary.Dto.Category;
+using BlazorApp.Models.Category;
 using BlazorApp.Services;
-
+using System;
 
 namespace BlazorApp.Pages.Category
 {
@@ -10,22 +10,34 @@ namespace BlazorApp.Pages.Category
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private ICategoryService CategoryService { get; set; } = default!;
 
-        public CreateCategoryDto CategoryData { get; set; } = new();
+        public CreateCategoryModel CategoryData { get; set; } = new();
+        public List<string> ServerErrors { get; set; } = new();
+        public bool IsSubmitting { get; set; } = false;
 
         protected async Task SaveCategory()
         {
-            var response = await CategoryService.AddAsync(CategoryData);
+            IsSubmitting = true;
 
-            if (response.IsSuccessStatusCode)
+            try
             {
-                NavigationManager.NavigateTo("/Categories");
+                var response = await CategoryService.AddAsync(CategoryData);
+                if (response.IsSuccessStatusCode)
+                {
+                    NavigationManager.NavigateTo("/Categories");
+                }
+                else
+                {
+                    ServerErrors.Add("Category error.");
+                }
             }
-            else
+            catch
             {
-                var strResponse = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Json Response: \n" + strResponse);
+                ServerErrors.Add("Category error.");
+            }
+            finally
+            {
+                IsSubmitting = false;
             }
         }
-
     }
 }

@@ -2,13 +2,15 @@
 using ClassLibrary.Dto.Transaction;
 using ClassLibrary.Dto.Category;
 using BlazorApp.Services;
-using BlazorApp.Models;
+using BlazorApp.Models.Transaction;
 using ChartJs.Blazor.Common;
 using ChartJs.Blazor.PieChart;
 using ChartJs.Blazor.Util;
 using System.Globalization;
 using ChartJs.Blazor;
 using ClassLibrary.Dto.Account;
+using BlazorApp.Models.Account;
+using BlazorApp.Models.Category;
 
 
 namespace BlazorApp.Pages
@@ -20,20 +22,21 @@ namespace BlazorApp.Pages
         [Inject] private IAccountService AccountService { get; set; } = default!;
 
         protected List<TransactionModel> transactions = new();
-        protected List<CategoryDto> categories = new();
-        protected List<AccountDto> accounts = new();
-        protected TransactionModel newTransaction = new();
+        protected List<CategoryModel> categories = new();
+        protected List<AccountModel> accounts = new();
+        protected CreateTransactionModel newTransaction = new();
         protected bool showAddModal = false;
         protected Chart? _pieChart;
         protected PieConfig? _pieConfig;
 
+        //there are controllers for this
         protected decimal TotalIncome => transactions.Where(t => t.IsIncome).Sum(t => t.Amount);
         protected decimal TotalExpense => transactions.Where(t => !t.IsIncome).Sum(t => t.Amount);
         protected decimal Balance => TotalIncome - TotalExpense;
         protected List<TransactionModel> RecentTransactions =>
             transactions.OrderByDescending(t => t.Date).Take(5).ToList();
 
-        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new TransactionModel { });
+        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionModel { });
         protected void HideAddTransactionModal() => showAddModal = false;
 
         protected async Task AddTransaction()
@@ -41,6 +44,8 @@ namespace BlazorApp.Pages
             await TransactionService.AddTransactionAsync(newTransaction);
             await LoadTransactions();
             showAddModal = false;
+            newTransaction = new CreateTransactionModel();
+            SetupPieChart();
         }
 
         protected override async Task OnInitializedAsync()
@@ -53,7 +58,7 @@ namespace BlazorApp.Pages
 
         private async Task LoadTransactions()
         {
-            transactions = await TransactionService.GetTransactionsAsync();
+            transactions = await TransactionService.GetAllTransactionsAsync();
         }
 
 

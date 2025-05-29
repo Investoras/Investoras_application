@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
-using System.Text.Json.Nodes;
+using System.Text.Json;
+using BlazorApp.Models.User;
 using ClassLibrary.Dto.User;
-
+using BlazorApp.Mappings;
 
 namespace BlazorApp.Pages.User
 {
@@ -11,50 +12,56 @@ namespace BlazorApp.Pages.User
         [Inject] private HttpClient Http { get; set; } = default!;
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
-        [Parameter]
-        public int Id { set; get; }
-        public UserDto user = null;
-        public UpdateUserDto userData { set; get; } = new();
-        public JsonNode Errors { set; get; } = new JsonObject();
+        [Parameter] public int Id { get; set; }
+
+        public UserModel User { get; set; }
+        public UpdateUserModel UserData { get; set; } = new();
+        public List<string> ServerErrors { get; set; } = new();
+        public bool IsSubmitting { get; set; } = false;
 
         protected override async Task OnParametersSetAsync()
         {
             try
             {
-                user = await Http.GetFromJsonAsync<UserDto>("User/" + Id);
-                userData.Username = user?.Username;
-                userData.Email = user.Email;
-                userData.Password = "";
+                var userDto = await Http.GetFromJsonAsync<UserDto>($"User/{Id}");
+                if (userDto != null)
+                {
+                    User = userDto.ToModel();
+                    UserData = userDto.ToUpdateModel(); 
+                }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine("Exception: " + ex.Message);
+                ServerErrors.Add("Update error.");
             }
         }
-
 
         protected async Task SaveUser()
         {
-            var response = await Http.PutAsJsonAsync("User/" + Id, userData);
-            if (response.IsSuccessStatusCode)
-            {
-                NavigationManager.NavigateTo("/Users");
-            }
-            else
-            {
-                var strResponse = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    var jsonResponse = JsonNode.Parse(strResponse);
-                    Errors = jsonResponse?["errors"] ?? new JsonObject();
+            ServerErrors.Clear();
+            IsSubmitting = true;
 
+            try
+            {
+                var response = await Http.PutAsJsonAsync($"User/{Id}", UserData.ToDto()); 
+                if (response.IsSuccessStatusCode)
+                {
+                    NavigationManager.NavigateTo("/Users");
                 }
-                catch (Exception ex)
+                else
                 {
-
+                    ServerErrors.Add("Update error.");
                 }
             }
-
+            catch
+            {
+                ServerErrors.Add("Update error.");
+            }
+            finally
+            {
+                IsSubmitting = false;
+            }
         }
+
     }
 }

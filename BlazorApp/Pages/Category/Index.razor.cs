@@ -1,4 +1,4 @@
-﻿using ClassLibrary.Dto.Category;
+﻿using BlazorApp.Models.Category;
 using Microsoft.AspNetCore.Components;
 using BlazorApp.Services;
 
@@ -9,7 +9,7 @@ public partial class Index
 {
     [Inject] private ICategoryService CategoryService { get; set; } = default!;
 
-    private IEnumerable<CategoryDto>? Categories;
+    private IEnumerable<CategoryModel>? Categories;
 
     protected override async Task OnInitializedAsync()
     {

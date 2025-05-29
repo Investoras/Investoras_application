@@ -1,69 +1,77 @@
 ﻿@page "/Transactions/UpdateTransaction/{Id:int}"
+@using System.ComponentModel.DataAnnotations
 
 
-<div class="row">
-	<div class="col-lg-8">
-		<h1 class="mb-5">Update</h1>
+<EditForm Model="TransactionData" OnValidSubmit="SaveTransaction">
+    <DataAnnotationsValidator />
 
-		@if (transaction == null)
-		{
-			<p><em>Loading ...</em></p>
-		}
-		else
-		{
-			<div class="row mb-3">
-				<label class="col-md-4 col-form-label">Amount</label>
-				<div class="col-md-8">
-					<input class="form-control" @bind="TransactionData.Amount" />
-				</div>
-			</div>
-			@if (Errors?["Amount"] != null)
-			{
-				<div class="text-danger">@Errors["Amount"]![0]!.ToString()</div>
-			}
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="mb-5">Update</h1>
 
-			<div class="row mb-3">
-				<label class="col-md-4 col-form-label">Description</label>
-				<div class="col-md-8">
-					<input class="form-control" @bind="TransactionData.Description" />
-				</div>
-			</div>
-			@if (Errors?["Description"] != null)
-			{
-				<div class="text-danger">@Errors["Description"]![0]!.ToString()</div>
-			}
+            @if (IsLoading)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else if (TransactionData != null)
+            {
+                <div class="row mb-3">
+                    <label class="col-md-4 col-form-label">Amount</label>
+                    <div class="col-md-8">
+                        <InputNumber class="form-control" @bind-Value="TransactionData.Amount" />
+                        <ValidationMessage For="@(() => TransactionData.Amount)" />
+                    </div>
+                </div>
 
-			<div class="row mb-3">
-				<label class="col-md-4 col-form-label">AccountId</label>
-				<div class="col-md-8">
-					<input class="form-control" @bind="TransactionData.AccountId" />
-				</div>
-			</div>
-			@if (Errors?["AccountId"] != null)
-			{
-				<div class="text-danger">@Errors["AccountId"]![0]!.ToString()</div>
-			}
+                <div class="row mb-3">
+                    <label class="col-md-4 col-form-label">Description</label>
+                    <div class="col-md-8">
+                        <InputText class="form-control" @bind-Value="TransactionData.Description" />
+                        <ValidationMessage For="@(() => TransactionData.Description)" />
+                    </div>
+                </div>
 
-			<div class="row mb-3">
-				<label class="col-md-4 col-form-label">CategoryId</label>
-				<div class="col-md-8">
-					<input class="form-control" @bind="TransactionData.CategoryId" />
-				</div>
-			</div>
-			@if (Errors?["CategoryId"] != null)
-			{
-				<div class="text-danger">@Errors["CategoryId"]![0]!.ToString()</div>
-			}
+                <div class="row mb-3">
+                    <label class="col-md-4 col-form-label">AccountId</label>
+                    <div class="col-md-8">
+                        <InputNumber class="form-control" @bind-Value="TransactionData.AccountId" />
+                        <ValidationMessage For="@(() => TransactionData.AccountId)" />
+                    </div>
+                </div>
 
-			<div class="row">
-				<div class="offset-md-4 row-cols-md-4 d-grid">
-					<button class="btn btn-primary" @onclick="SaveTransaction">Submit</button>
+                <div class="row mb-3">
+                    <label class="col-md-4 col-form-label">CategoryId</label>
+                    <div class="col-md-8">
+                        <InputNumber class="form-control" @bind-Value="TransactionData.CategoryId" />
+                        <ValidationMessage For="@(() => TransactionData.CategoryId)" />
+                    </div>
+                </div>
 
-				</div>
-				<div class="col-md-4 d-grid">
-					<a class="btn btn-outline-primary" href="/Transactions">Cancel</a>
-				</div>
-			</div>
-		}
-	</div>
-</div>
+                @if (ServerErrors?.Count > 0)
+                {
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach (var error in ServerErrors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="offset-md-4 col-md-4 d-grid">
+                        <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Submit</button>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <a class="btn btn-outline-primary" href="/Transactions">Cancel</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger">Transaction not found.</div>
+            }
+        </div>
+    </div>
+</EditForm>

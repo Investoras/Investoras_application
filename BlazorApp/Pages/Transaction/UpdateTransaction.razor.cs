@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Text.Json.Nodes;
-using ClassLibrary.Dto.Transaction;
+using System.Text.Json;
+using BlazorApp.Models.Transaction;
 using BlazorApp.Services;
-using BlazorApp.Models;
-using ClassLibrary.Dto.Category;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorApp.Pages.Transaction
 {
@@ -13,42 +11,52 @@ namespace BlazorApp.Pages.Transaction
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private ITransactionService TransactionService { get; set; } = default!;
 
-        [Parameter]
-        public int Id { set; get; }
-        public TransactionModel transaction = null;
-        public TransactionModel TransactionData { set; get; } = new();
-        public JsonNode Errors { set; get; } = new JsonObject();
+        [Parameter] public int Id { get; set; }
+
+        public bool IsLoading { get; set; } = true;
+        public bool IsSubmitting { get; set; } = false;
+        public UpdateTransactionModel TransactionData { get; set; } = new();
+        public List<string> ServerErrors { get; set; } = new();
 
         protected override async Task OnParametersSetAsync()
         {
-            transaction = await TransactionService.GetByIdAsync(Id);
-            TransactionData.Amount = transaction.Amount;
-            TransactionData.Description = transaction.Description;
-            TransactionData.AccountId = transaction.AccountId;
-            TransactionData.CategoryId = transaction.CategoryId;
-        }
+            var transaction = await TransactionService.GetTransactionByIdAsync(Id);
 
-
-        protected async Task SaveTransaction()
-        {
-            var response = await TransactionService.UpdateTransactionAsync(Id, TransactionData);
-            if (response.IsSuccessStatusCode)
+            if (transaction != null)
             {
-                NavigationManager.NavigateTo("/Transactions");
+                TransactionData = new UpdateTransactionModel
+                {
+                    Amount = transaction.Amount,
+                    Description = transaction.Description,
+                    AccountId = transaction.AccountId,
+                    CategoryId = transaction.CategoryId
+                };
             }
             else
             {
-                var strResponse = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    var jsonResponse = JsonNode.Parse(strResponse);
-                    Errors = jsonResponse?["errors"] ?? new JsonObject();
+                ServerErrors.Add("Update error.");
+            }
 
-                }
-                catch
-                {
-                    Console.WriteLine("Category save error.");
-                }
+            IsLoading = false;
+        }
+
+        protected async Task SaveTransaction()
+        {
+            ServerErrors.Clear();
+            IsSubmitting = true;
+
+            try
+            {
+                await TransactionService.UpdateTransactionAsync(Id, TransactionData);
+                NavigationManager.NavigateTo("/Transactions");
+            }
+            catch
+            {
+                ServerErrors.Add("Update error.");
+            }
+            finally
+            {
+                IsSubmitting = false;
             }
         }
     }

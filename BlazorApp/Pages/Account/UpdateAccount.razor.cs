@@ -2,6 +2,9 @@
 using System.Text.Json.Nodes;
 using ClassLibrary.Dto.Account;
 using BlazorApp.Services;
+using BlazorApp.Models.Account;
+using BlazorApp.Models.Category;
+using ClassLibrary.Dto.Category;
 
 
 namespace BlazorApp.Pages.Account
@@ -13,48 +16,47 @@ namespace BlazorApp.Pages.Account
 
         [Parameter]
         public int Id { set; get; }
-        public AccountDto Account = null;
-        public UpdateAccountDto AccountData { set; get; } = new();
-        public JsonNode Errors { set; get; } = new JsonObject();
+        public AccountModel Account = null;
+        public UpdateAccountModel AccountData { set; get; } = new();
+        public List<string> ServerErrors { get; set; } = new();
 
         protected override async Task OnParametersSetAsync()
         {
-            try
+            var account = await AccountService.GetByIdAsync(Id);
+            if (account != null)
             {
-                Account = await AccountService.GetByIdAsync(Id);
-                AccountData.Name = Account?.Name;
-                AccountData.Balance = Account.Balance;
-                AccountData.UserId = Account.UserId;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception: " + ex.Message);
-            }
-        }
-
-
-        protected async Task SaveAccount()
-        {
-            var response = await AccountService.UpdateAccountAsync(Id, AccountData);
-            if (response.IsSuccessStatusCode)
-            {
-                NavigationManager.NavigateTo("/Accounts");
+                AccountData = new UpdateAccountModel
+                {
+                    Name = account?.Name,
+                    Balance = account.Balance,
+                    UserId = account.UserId
+                };
             }
             else
             {
-                var strResponse = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    var jsonResponse = JsonNode.Parse(strResponse);
-                    Errors = jsonResponse?["errors"] ?? new JsonObject();
+                ServerErrors.Add("Update error.");
+            }
+        }
 
+        protected async Task SaveAccount()
+        {
+            ServerErrors.Clear();
+            try
+            {
+                var response = await AccountService.UpdateAccountAsync(Id, AccountData);
+                if (response.IsSuccessStatusCode)
+                {
+                    NavigationManager.NavigateTo("/Accounts");
                 }
-                catch (Exception ex)
+                else
                 {
-
+                    ServerErrors.Add("Update error.");
                 }
             }
-
+            catch
+            {
+                ServerErrors.Add("Update error.");
+            }
         }
     }
 }

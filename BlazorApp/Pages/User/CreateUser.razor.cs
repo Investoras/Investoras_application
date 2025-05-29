@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
-using ClassLibrary.Dto.User;
 using System.Net.Http.Json;
-
+using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
+using BlazorApp.Models.User;
+using BlazorApp.Mappings;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlazorApp.Pages.User
 {
@@ -10,22 +13,35 @@ namespace BlazorApp.Pages.User
         [Inject] private HttpClient Http { get; set; } = default!;
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
-        public CreateUserDto UserData { get; set; } = new();
+        public CreateUserModel UserData { get; set; } = new();
+        public List<string> ServerErrors { get; set; } = new();
+        public bool IsSubmitting { get; set; } = false;
 
         protected async Task SaveUser()
         {
-            var response = await Http.PostAsJsonAsync("User", UserData);
+            ServerErrors.Clear();
+            IsSubmitting = true;
 
-            if (response.IsSuccessStatusCode)
+            try
             {
-                NavigationManager.NavigateTo("/Users");
+                var response = await Http.PostAsJsonAsync("User", UserData);
+                if (response.IsSuccessStatusCode)
+                {
+                    NavigationManager.NavigateTo("/Users");
+                }
+                else
+                {
+                    ServerErrors.Add("Update error.");
+                }
             }
-            else
+            catch
             {
-                var strResponse = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Json Response: \n" + strResponse);
+                ServerErrors.Add("Update error.");
+            }
+            finally
+            {
+                IsSubmitting = false;
             }
         }
-
     }
 }

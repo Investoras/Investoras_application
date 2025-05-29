@@ -4,7 +4,6 @@
 
 <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
     @if (!string.IsNullOrEmpty(loginError))
     {

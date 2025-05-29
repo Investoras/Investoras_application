@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using ClassLibrary.Dto.User;
+using BlazorApp.Models.User;
 using BlazorApp.Services;
 using System.Net.Http.Json;
 
@@ -12,7 +12,7 @@ namespace BlazorApp.Pages.Authorization
         [Inject] private IAuthService AuthService { get; set; } = default!;
         [Inject] private NavigationManager Navigation { get; set; } = default!;
 
-        private LoginUserDto loginModel = new();
+        private LoginUserModel loginModel = new();
         private string? loginError;
 
         private async Task HandleLogin()

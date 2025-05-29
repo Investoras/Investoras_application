@@ -1,5 +1,6 @@
 ﻿using ClassLibrary.Dto;
-using ClassLibrary.Dto.User;
+using BlazorApp.Models.User;
+using BlazorApp.Mappings;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
@@ -18,9 +19,11 @@ public class AuthService : IAuthService
         _httpClient = httpClient;
     }
 
-    public async Task<bool> LoginAsync(LoginUserDto loginModel)
+    public async Task<bool> LoginAsync(LoginUserModel loginModel)
     {
-        var response = await _httpClient.PostAsJsonAsync("User/login", loginModel);
+        var loginDto = loginModel.ToDto();
+
+        var response = await _httpClient.PostAsJsonAsync("User/login", loginDto);
 
         if (response.IsSuccessStatusCode)
         {
@@ -42,7 +45,6 @@ public class AuthService : IAuthService
         return false;
     }
 
-
     public Task LogoutAsync()
     {
         Token = null;
@@ -52,8 +54,10 @@ public class AuthService : IAuthService
         return Task.CompletedTask;
     }
 
-    public async Task RegisterAsync(CreateUserDto createUserDto)
+    public async Task RegisterAsync(CreateUserModel createUserModel)
     {
+        var createUserDto = createUserModel.ToDto();
+
         var response = await _httpClient.PostAsJsonAsync("User", createUserDto);
 
         if (!response.IsSuccessStatusCode)

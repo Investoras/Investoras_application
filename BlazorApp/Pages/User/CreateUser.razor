@@ -1,40 +1,58 @@
 ﻿@page "/Users/AddUser"
-
-<div class="row">
-	<div class="col-lg-8">
-		<h1 class="mb-5">New User</h1>
-
-		<div class="row mb-3">
-			<label class="col-md-4 col-form-label">UserName</label>
-			<div class="col-md-8">
-				<input class="form-control" @bind="UserData.Username"/>
-			</div>
-		</div>
-
-		<div class="row mb-3">
-			<label class="col-md-4 col-form-label">Email</label>
-			<div class="col-md-8">
-				<input class="form-control" @bind="UserData.Email" />
-			</div>
-		</div>
-
-		<div class="row mb-3">
-			<label class="col-md-4 col-form-label">Password</label>
-			<div class="col-md-8">
-				<input class="form-control" @bind="UserData.Password" />
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="offset-md-4 row-cols-md-4 d-grid">
-				<button class="btn btn-primary" @onclick="SaveUser">Submit</button>
-
-			</div>
-			<div class="col-md-4 d-grid">
-				<a class="btn btn-outline-primary" href="/Users">Cancel</a>
-			</div>
-		</div>
-	</div>
-</div>
+@using System.ComponentModel.DataAnnotations
 
 
+<EditForm Model="UserData" OnValidSubmit="SaveUser">
+    <DataAnnotationsValidator />
+
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="mb-5">New User</h1>
+
+            <div class="row mb-3">
+                <label class="col-md-4 col-form-label">UserName</label>
+                <div class="col-md-8">
+                    <InputText class="form-control" @bind-Value="UserData.Username" />
+                    <ValidationMessage For="@(() => UserData.Username)" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-md-4 col-form-label">Email</label>
+                <div class="col-md-8">
+                    <InputText class="form-control" @bind-Value="UserData.Email" />
+                    <ValidationMessage For="@(() => UserData.Email)" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-md-4 col-form-label">Password</label>
+                <div class="col-md-8">
+                    <InputText type="password" class="form-control" @bind-Value="UserData.Password" />
+                    <ValidationMessage For="@(() => UserData.Password)" />
+                </div>
+            </div>
+
+            @if (ServerErrors?.Count > 0)
+            {
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach (var error in ServerErrors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <div class="row">
+                <div class="offset-md-4 col-md-4 d-grid">
+                    <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Submit</button>
+                </div>
+                <div class="col-md-4 d-grid">
+                    <a class="btn btn-outline-primary" href="/Users">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>

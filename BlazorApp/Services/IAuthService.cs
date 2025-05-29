@@ -1,13 +1,15 @@
-﻿using ClassLibrary.Dto.User;
+﻿using BlazorApp.Models.User;
 
-namespace BlazorApp.Services;
-
-
-public interface IAuthService
+namespace BlazorApp.Services
 {
-    Task<bool> LoginAsync(LoginUserDto loginModel);
-    Task RegisterAsync(CreateUserDto loginModel);
-    Task LogoutAsync();
-    bool IsAuthenticated { get; }
-    int? UserId { get; }
+    public interface IAuthService
+    {
+        bool IsAuthenticated { get; }
+        string? Token { get; }
+        int? UserId { get; }
+
+        Task<bool> LoginAsync(LoginUserModel loginModel);
+        Task LogoutAsync();
+        Task RegisterAsync(CreateUserModel createUserModel);
+    }
 }
