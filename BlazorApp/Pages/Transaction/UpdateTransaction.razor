@@ -7,16 +7,16 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <h1 class="mb-5">Update</h1>
+            <h1 class="mb-5">Изменение данных о транзакции</h1>
 
             @if (IsLoading)
             {
-                <p><em>Loading...</em></p>
+                <p><em>Загрузка...</em></p>
             }
             else if (TransactionData != null)
             {
                 <div class="row mb-3">
-                    <label class="col-md-4 col-form-label">Amount</label>
+                    <label class="col-md-4 col-form-label">Сумма</label>
                     <div class="col-md-8">
                         <InputNumber class="form-control" @bind-Value="TransactionData.Amount" />
                         <ValidationMessage For="@(() => TransactionData.Amount)" />
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label class="col-md-4 col-form-label">Description</label>
+                    <label class="col-md-4 col-form-label">Описание</label>
                     <div class="col-md-8">
                         <InputText class="form-control" @bind-Value="TransactionData.Description" />
                         <ValidationMessage For="@(() => TransactionData.Description)" />
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label class="col-md-4 col-form-label">AccountId</label>
+                    <label class="col-md-4 col-form-label">Id счёта</label>
                     <div class="col-md-8">
                         <InputNumber class="form-control" @bind-Value="TransactionData.AccountId" />
                         <ValidationMessage For="@(() => TransactionData.AccountId)" />
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label class="col-md-4 col-form-label">CategoryId</label>
+                    <label class="col-md-4 col-form-label">Категория</label>
                     <div class="col-md-8">
                         <InputNumber class="form-control" @bind-Value="TransactionData.CategoryId" />
                         <ValidationMessage For="@(() => TransactionData.CategoryId)" />
@@ -61,16 +61,16 @@
 
                 <div class="row">
                     <div class="offset-md-4 col-md-4 d-grid">
-                        <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Submit</button>
+                        <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Сохранить</button>
                     </div>
                     <div class="col-md-4 d-grid">
-                        <a class="btn btn-outline-primary" href="/Transactions">Cancel</a>
+                        <a class="btn btn-outline-primary" href="/Transactions">Отменить</a>
                     </div>
                 </div>
             }
             else
             {
-                <div class="alert alert-danger">Transaction not found.</div>
+                <div class="alert alert-danger">Транзакция не найдена.</div>
             }
         </div>
     </div>

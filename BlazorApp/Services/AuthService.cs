@@ -14,6 +14,7 @@ public class AuthService : IAuthService
 
     public bool IsAuthenticated { get; private set; }
     public int? UserId { get; private set; }
+    public string? Username { get; private set; }
     public string? Token { get; private set; }
 
     public event Action? OnAuthStateChanged;
@@ -42,6 +43,7 @@ public class AuthService : IAuthService
             if (authResponse is not null)
             {
                 Token = authResponse.Token;
+                Username = authResponse.Username;
                 UserId = authResponse.UserId;
                 IsAuthenticated = true;
 
@@ -49,6 +51,7 @@ public class AuthService : IAuthService
                     new AuthenticationHeaderValue("Bearer", Token);
 
                 await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "token", Token);
+                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "username", Username);
                 await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "userId", UserId.ToString());
 
                 OnAuthStateChanged?.Invoke();
@@ -62,11 +65,13 @@ public class AuthService : IAuthService
     public async Task LogoutAsync()
     {
         OnAuthStateChanged?.Invoke();
+        Username = null;
         Token = null;
         UserId = null;
         IsAuthenticated = false;
         _httpClient.DefaultRequestHeaders.Authorization = null;
         await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", "token");
+        await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", "username");
         await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", "userId");
     }
 
@@ -86,11 +91,15 @@ public class AuthService : IAuthService
     public async Task TryRestoreSessionAsync()
     {
         var token = await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "token");
+        var username = await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "username");
         var userIdString = await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "userId");
 
-        if (!string.IsNullOrEmpty(token) && int.TryParse(userIdString, out var userId))
+        if (!string.IsNullOrEmpty(token) &&
+            !string.IsNullOrEmpty(username) && 
+            int.TryParse(userIdString, out var userId))
         {
             Token = token;
+            Username = username;
             UserId = userId;
             IsAuthenticated = true;
 

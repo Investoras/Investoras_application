@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using BlazorApp.Models.Transaction;
 using BlazorApp.Services;
 using BlazorApp.Models.Account;
+using BlazorApp.Models.Category;
 
 namespace BlazorApp.Pages.Transaction;
 
@@ -17,6 +18,7 @@ public partial class ListTransaction
     [Inject] private IAuthService AuthService { get; set; } = default!;
 
     protected List<AccountModel> accounts = new();
+    protected List<CategoryModel> categories = new();
 
     private List<TransactionDto>? transactions;
 
@@ -31,5 +33,14 @@ public partial class ListTransaction
                                         .Where(ta => ta.Account.UserId == AuthService.UserId)
                                         .Select(ta => ta.Transaction)
                                         .ToList();
+        categories = await CategoryService.GetAllAsync();
+    }
+
+    protected string GetCategoryName(int? categoryId)
+    {
+        if (categoryId == null) return "Без категории";
+
+        var category = categories.FirstOrDefault(c => c.CategoryId == categoryId);
+        return category?.Name ?? "Неизвестная категория";
     }
 }

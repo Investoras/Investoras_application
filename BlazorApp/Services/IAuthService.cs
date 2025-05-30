@@ -6,6 +6,7 @@ namespace BlazorApp.Services
     {
         bool IsAuthenticated { get; }
         string? Token { get; }
+        string? Username { get; }
         int? UserId { get; }
 
         event Action? OnAuthStateChanged;

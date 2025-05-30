@@ -28,7 +28,7 @@
         </div>
 
         <div class="content" style="flex: 2; border: 1px solid black;">
-            <h1 class="app-title" style="text-align: center;">Название приложения</h1>
+            <h1 class="app-title" style="text-align: center;">Ваша статистика</h1>
 
             <div class="chart-section">
                 <div style="text-align:center; width:100%">
@@ -80,7 +80,14 @@
 
         <div class="right" style="flex: 1; border: 1px solid black;">
             <div class="user-info" style="text-align: center;">
-                <span class="username">Пользователь: </span>
+                @if(AuthService.Username != null)
+				{
+					<span class="username">Добро пожаловать, @AuthService.Username!</span>
+				}
+				else
+				{
+					<span class="username">Добро пожаловать, гость!</span>
+				}
             </div>
 
             <div class="transactions-section">

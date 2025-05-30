@@ -1,24 +1,24 @@
 ﻿@page "/Transactions"
 
 
-<h1 class="text-center mb-3">List of Transactions</h1>
+<h1 class="text-center mb-3">История транзакций</h1>
 
 @if (transactions == null)
 {
-    <p><em>Loading ...</em></p>
+    <p><em>Загрузка ...</em></p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>TransactionId</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Description</th>
-                <th>AccountId</th>
-                <th>CategoryId</th>
-                <th>Action</th>
+                <th>Id транзакции</th>
+                <th>Дата</th>
+                <th>Сумма</th>
+                <th>Описание</th>
+                <th>Id счёта</th>
+                <th>Категория</th>
+                <th>Действие</th>
             </tr>
         </thead>
         <tbody>
@@ -30,10 +30,10 @@ else
                     <td>@transaction.Amount</td>
                     <td>@transaction.Description</td>
                     <td>@transaction.AccountId</td>
-                    <td>@transaction.CategoryId</td>
+                    <td>@GetCategoryName(transaction.CategoryId)</td>
                     <td style="white-space:nowrap">
-                        <a class="btn btn-primary btn-sm" href="/Transactions/UpdateTransaction/@transaction.TransactionId">Update</a>
-                        <a class="btn btn-danger btn-sm" href="/Transactions/DeleteTransaction/@transaction.TransactionId">Delete</a>
+                        <a class="btn btn-primary btn-sm" href="/Transactions/UpdateTransaction/@transaction.TransactionId">Изменить</a>
+                        <a class="btn btn-danger btn-sm" href="/Transactions/DeleteTransaction/@transaction.TransactionId">Удалить</a>
                     </td>
                 </tr>
             }
