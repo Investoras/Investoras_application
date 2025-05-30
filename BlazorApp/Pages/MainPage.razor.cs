@@ -48,7 +48,7 @@ namespace BlazorApp.Pages
         protected List<TransactionModel> RecentTransactions =>
             transactions.OrderByDescending(t => t.Date).Take(5).ToList();
 
-        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionModel { });
+        protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionModel {Date=DateTime.Now});
         protected void HideAddTransactionModal() => showAddModal = false;
         protected bool HasChartData => transactions.Any(t => t.IsIncome == isIncomeSelected &&
                                                             t.Date.Month == SelectedMonth &&
@@ -58,7 +58,7 @@ namespace BlazorApp.Pages
         protected string SelectedMonthName => new CultureInfo("ru-RU").DateTimeFormat.GetMonthName(SelectedMonth);
         protected async Task AddTransaction()
         {
-            newTransaction.Date = DateTime.UtcNow;
+            newTransaction.Date = DateTime.SpecifyKind(newTransaction.Date, DateTimeKind.Utc);
             await TransactionService.AddTransactionAsync(newTransaction);
             await LoadTransactions();
             showAddModal = false;
