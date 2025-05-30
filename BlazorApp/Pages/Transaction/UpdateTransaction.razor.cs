@@ -3,6 +3,7 @@ using System.Text.Json;
 using BlazorApp.Models.Transaction;
 using BlazorApp.Services;
 using System.ComponentModel.DataAnnotations;
+using BlazorApp.Models.Category;
 
 namespace BlazorApp.Pages.Transaction
 {
@@ -10,12 +11,14 @@ namespace BlazorApp.Pages.Transaction
     {
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private ITransactionService TransactionService { get; set; } = default!;
+        [Inject] private ICategoryService CategoryService { get; set; } = default!;
 
         [Parameter] public int Id { get; set; }
 
         public bool IsLoading { get; set; } = true;
         public bool IsSubmitting { get; set; } = false;
         public UpdateTransactionModel TransactionData { get; set; } = new();
+        public List<CategoryModel> Categories { get; set; } = new();
         public List<string> ServerErrors { get; set; } = new();
         public DateTime TransactionDateLocal
         {
@@ -27,6 +30,7 @@ namespace BlazorApp.Pages.Transaction
 
         protected override async Task OnParametersSetAsync()
         {
+            Categories = await CategoryService.GetAllAsync();
             var transaction = await TransactionService.GetTransactionByIdAsync(Id);
 
             if (transaction != null)

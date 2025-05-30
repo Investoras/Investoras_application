@@ -50,8 +50,14 @@
                 <div class="row mb-3">
                     <label class="col-md-4 col-form-label">Категория</label>
                     <div class="col-md-8">
-                        <InputDate class="form-control" @bind-Value="TransactionDateLocal" @bind-Value:format="yyyy-MM-dd"></InputDate>
-                        <ValidationMessage For="@(() => TransactionData.CreatedAt)" />
+                        <InputSelect class="form-control" @bind-Value="TransactionData.CategoryId">
+                            <option value="0">-- Выберите категорию --</option>
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category.CategoryId">@category.Name (@(category.IsIncome ? "Доход" : "Расход"))</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => TransactionData.CategoryId)" />
                     </div>
                 </div>
 
