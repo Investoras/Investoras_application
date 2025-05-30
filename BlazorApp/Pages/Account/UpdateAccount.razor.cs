@@ -46,7 +46,8 @@ namespace BlazorApp.Pages.Account
                 {
                     Name = account?.Name,
                     Balance = account.Balance,
-                    UserId = (int)LoggedUserId
+                    UserId = (int)LoggedUserId,
+                    CreatedAt = account.CreatedAt
                 };
             }
             else

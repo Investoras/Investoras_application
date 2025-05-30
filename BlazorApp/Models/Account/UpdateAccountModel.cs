@@ -15,6 +15,8 @@ namespace BlazorApp.Models.Account
         [Range(0.01, double.MaxValue, ErrorMessage = "Баланс должен быть больше 0.")]
         public decimal Balance { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public int UserId { get; set; }
     }
 }

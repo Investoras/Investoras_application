@@ -88,7 +88,8 @@ public class AccountService : IAccountService
         {
             Balance = accountDto.Balance,
             Name = accountDto.Name,
-            UserId = accountDto.UserId
+            UserId = accountDto.UserId,
+            CreatedAt = accountDto.CreatedAt
         };
 
         var validationContext = new ValidationContext(accountModel);

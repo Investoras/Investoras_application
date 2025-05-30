@@ -28,7 +28,8 @@ namespace BlazorApp.Mappings
         {
             Name = model.Name,
             Balance = model.Balance,
-            UserId = model.UserId
+            UserId = model.UserId,
+            CreatedAt = model.CreatedAt
         };
     }
 }
