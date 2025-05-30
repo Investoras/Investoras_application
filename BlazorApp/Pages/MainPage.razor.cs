@@ -32,7 +32,6 @@ namespace BlazorApp.Pages
         protected Chart? _pieChart;
         protected PieConfig? _pieConfig;
 
-        //there are controllers for this
         protected decimal TotalIncome => transactions.Join(accounts,
                                                         t => t.AccountId,
                                                         a => a.AccountId,
@@ -51,8 +50,12 @@ namespace BlazorApp.Pages
 
         protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionModel { });
         protected void HideAddTransactionModal() => showAddModal = false;
-        protected bool HasChartData => transactions.Any(t => t.IsIncome == isIncomeSelected && t.Date.Month == DateTime.Now.Month);
-        protected string CurrentMonthName => new CultureInfo("ru-RU").DateTimeFormat.GetMonthName(DateTime.Now.Month);
+        protected bool HasChartData => transactions.Any(t => t.IsIncome == isIncomeSelected &&
+                                                            t.Date.Month == SelectedMonth &&
+                                                            t.Date.Year == SelectedYear);
+        protected int SelectedMonth { get; set; } = DateTime.Now.Month;
+        protected int SelectedYear { get; set; } = DateTime.Now.Year;
+        protected string SelectedMonthName => new CultureInfo("ru-RU").DateTimeFormat.GetMonthName(SelectedMonth);
         protected async Task AddTransaction()
         {
             newTransaction.Date = DateTime.UtcNow;
@@ -149,7 +152,7 @@ namespace BlazorApp.Pages
                 return;
 
             var transactionsByCategories = transactions
-                .Where(t => isIncomeSelected == t.IsIncome && t.Date.Month == DateTime.Now.Month)
+                .Where(t => isIncomeSelected == t.IsIncome && t.Date.Month == SelectedMonth && t.Date.Year == SelectedYear)
                 .GroupBy(t => t.CategoryId)
                 .Select(g => new
                 {
@@ -160,7 +163,7 @@ namespace BlazorApp.Pages
 
             _pieConfig.Data.Labels.Clear();
             _pieConfig.Data.Datasets.Clear();
-            _pieConfig.Options.Title.Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {CurrentMonthName}";
+            _pieConfig.Options.Title.Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {SelectedMonthName} {SelectedYear}";
 
             if (!transactionsByCategories.Any())
                 return;
@@ -201,13 +204,50 @@ namespace BlazorApp.Pages
                     Title = new OptionsTitle
                     {
                         Display = true,
-                        Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {CurrentMonthName}",
+                        Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {SelectedMonthName} {SelectedYear}",
                         FontSize = 18
                     },
                 }
             };
 
+           UpdatePieChart();
+        }
+        protected async Task PreviousMonth()
+        {
+            if (SelectedMonth == 1)
+            {
+                SelectedMonth = 12;
+                SelectedYear--;
+            }
+            else
+            {
+                SelectedMonth--;
+            }
             UpdatePieChart();
+            if (_pieChart != null && HasChartData)
+            {
+                await _pieChart.Update();
+            }
+            StateHasChanged();
+        }
+
+        protected async Task NextMonth()
+        {
+            if (SelectedMonth == 12)
+            {
+                SelectedMonth = 1;
+                SelectedYear++;
+            }
+            else
+            {
+                SelectedMonth++;
+            }
+            UpdatePieChart();
+            if (_pieChart != null && HasChartData)
+            {
+                await _pieChart.Update();
+            }
+            StateHasChanged();
         }
     }
 }

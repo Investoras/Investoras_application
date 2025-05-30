@@ -32,6 +32,13 @@
 
             <div class="chart-section">
                 <div style="text-align:center; width:100%">
+                    <div class="date-navigator" style="text-align: center; margin-bottom: 20px;">
+                        <button @onclick="PreviousMonth" style="padding: 5px 10px; margin-right: 10px;">◀</button>
+                        <span style="font-size: 18px; font-weight: bold; margin: 0 15px;">
+                            @SelectedMonthName @SelectedYear
+                        </span>
+                        <button @onclick="NextMonth" style="padding: 5px 10px; margin-left: 10px;">▶</button>
+                    </div>
                     <div style="display:inline-block">
                         <input type="radio" id="income"
                         name="graph_type"
@@ -62,7 +69,7 @@
                     else if (!HasChartData)
                     {
                         <div style="padding: 50px; text-align: center;">
-                            <p>Нет данных для отображения за @(CurrentMonthName).</p>
+                            <p>Нет данных для отображения за выбранную дату.</p>
                         </div>
                     }
                     else
