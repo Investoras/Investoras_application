@@ -1,12 +1,12 @@
 ﻿@page "/Users"
 
 
-<h1 class = "text-center mb-3">List of Users</h1>
-<a class="btn btn-primary mb-3" href="/Users/AddUser">New User</a>
+<h1 class = "text-center mb-3">Список пользователей</h1>
+<a class="btn btn-primary mb-3" href="/Users/AddUser">Новый пользователь</a>
 
 @if(users == null)
 {
-    <p><em>Loading ...</em></p>
+    <p><em>Загрузка...</em></p>
 }
 else
 {
@@ -14,11 +14,11 @@ else
         <thead>
             <tr>
                 <th>UserId</th>
-                <th>Username</th>
+                <th>Имя пользователя</th>
                 <th>Email</th>
-                <th>Password</th>
-                <th>CreatedAt</th>
-                <th>Action</th>
+                <th>Пароль</th>
+                <th>Создан</th>
+                <th>Действие</th>
             </tr>
         </thead>
         <tbody>

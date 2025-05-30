@@ -15,7 +15,7 @@ else
             <tr>
                 <th>Id Категории</th>
                 <th>Название</th>
-                <th>Доход?</th>
+                <th>Тип</th>
                 <th>Описание</th>
                 <th></th>
             </tr>
@@ -26,7 +26,14 @@ else
                 <tr>
                     <td>@Category.CategoryId</td>
                     <td>@Category.Name</td>
-                    <td>@Category.IsIncome</td>
+                    @if(Category.IsIncome)
+                    {
+                        <td>Доход</td>
+                    }
+                    else
+                    {
+                        <td>Расход</td>
+                    }
                     <td>@Category.Description</td>
                     <td style="white-space:nowrap">
                         <a class="btn btn-primary btn-sm" href="/Categories/UpdateCategory/@Category.CategoryId">Обновить</a>

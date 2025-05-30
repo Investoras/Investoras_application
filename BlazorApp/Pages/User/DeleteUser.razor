@@ -1,7 +1,7 @@
 ﻿@page "/Users/DeleteUser/{Id:int}"
 
 
-<h1 class="mb-3">Delete User</h1>
-<p>Are you sure want to delete user with Id @Id?</p>
-<button class="btn btn-danger" @onclick="Delete_User">Delete</button>
-<a class="btn btn-secondary" href="/users">Cancel</a>
+<h1 class="mb-3">Удаление пользователя</h1>
+<p>Вы уверены, что хотите удалить пользователя с ID @Id?</p>
+<button class="btn btn-danger" @onclick="Delete_User">Да, удалить</button>
+<a class="btn btn-secondary" href="/users">Нет, оставить</a>

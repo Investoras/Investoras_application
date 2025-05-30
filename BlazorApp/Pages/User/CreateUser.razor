@@ -7,10 +7,10 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <h1 class="mb-5">New User</h1>
+            <h1 class="mb-5">Новый пользователь</h1>
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">UserName</label>
+                <label class="col-md-4 col-form-label">Имя пользователя</label>
                 <div class="col-md-8">
                     <InputText class="form-control" @bind-Value="UserData.Username" />
                     <ValidationMessage For="@(() => UserData.Username)" />
@@ -26,7 +26,7 @@
             </div>
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Password</label>
+                <label class="col-md-4 col-form-label">Пароль</label>
                 <div class="col-md-8">
                     <InputText type="password" class="form-control" @bind-Value="UserData.Password" />
                     <ValidationMessage For="@(() => UserData.Password)" />
@@ -47,10 +47,10 @@
 
             <div class="row">
                 <div class="offset-md-4 col-md-4 d-grid">
-                    <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Submit</button>
+                    <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Создать</button>
                 </div>
                 <div class="col-md-4 d-grid">
-                    <a class="btn btn-outline-primary" href="/Users">Cancel</a>
+                    <a class="btn btn-outline-primary" href="/Users">Отменить</a>
                 </div>
             </div>
         </div>

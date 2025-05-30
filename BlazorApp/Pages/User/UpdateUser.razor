@@ -5,16 +5,16 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <h1 class="mb-5">Update</h1>
+            <h1 class="mb-5">Обновление пользователя</h1>
 
             @if (User == null)
             {
-                <p><em>Loading ...</em></p>
+                <p><em>Загрузка ...</em></p>
             }
             else
             {
                 <div class="row mb-3">
-                    <label class="col-md-4 col-form-label">Username</label>
+                    <label class="col-md-4 col-form-label">Имя пользователя</label>
                     <div class="col-md-8">
                         <InputText class="form-control" @bind-Value="UserData.Username" />
                         <ValidationMessage For="@(() => UserData.Username)" />
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label class="col-md-4 col-form-label">Password</label>
+                    <label class="col-md-4 col-form-label">Пароль</label>
                     <div class="col-md-8">
                         <InputText class="form-control" type="password" @bind-Value="UserData.Password" />
                         <ValidationMessage For="@(() => UserData.Password)" />
@@ -51,10 +51,10 @@
 
                 <div class="row">
                     <div class="offset-md-4 col-md-4 d-grid">
-                        <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Submit</button>
+                        <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Сохранить изменения</button>
                     </div>
                     <div class="col-md-4 d-grid">
-                        <a class="btn btn-outline-primary" href="/Users">Cancel</a>
+                        <a class="btn btn-outline-primary" href="/Users">Отменить изменения</a>
                     </div>
                 </div>
             }
