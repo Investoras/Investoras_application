@@ -12,6 +12,8 @@ namespace BlazorApp.Models.Transaction
         [StringLength(100, ErrorMessage = "Слишком длинное описание.")]
         public string? Description { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public int AccountId { get; set; }
 
         public int CategoryId { get; set; }

@@ -19,6 +19,7 @@ namespace BlazorApp.Pages
         [Inject] private ITransactionService TransactionService { get; set; } = default!;
         [Inject] private ICategoryService CategoryService { get; set; } = default!;
         [Inject] private IAccountService AccountService { get; set; } = default!;
+        [Inject] private IAuthService AuthService { get; set; } = default!;
 
         protected List<TransactionModel> transactions = new();
         protected List<CategoryModel> categories = new();
@@ -30,9 +31,19 @@ namespace BlazorApp.Pages
         protected PieConfig? _pieConfig;
 
         //there are controllers for this
-        protected decimal TotalIncome => transactions.Where(t => t.IsIncome).Sum(t => t.Amount);
-        protected decimal TotalExpense => transactions.Where(t => !t.IsIncome).Sum(t => t.Amount);
-        protected decimal Balance => TotalIncome - TotalExpense;
+        protected decimal TotalIncome => transactions.Join(accounts,
+                                                        t => t.AccountId,
+                                                        a => a.AccountId,
+                                                        (t, a) => new { Transaction = t, Account = a })
+                                                    .Where(ta => ta.Account.UserId == AuthService.UserId && ta.Transaction.IsIncome)
+                                                    .Sum(ta => ta.Transaction.Amount);
+        protected decimal TotalExpense => transactions.Join(accounts,
+                                                        t => t.AccountId,
+                                                        a => a.AccountId,
+                                                        (t, a) => new { Transaction = t, Account = a })
+                                                    .Where(ta => ta.Account.UserId == AuthService.UserId && !ta.Transaction.IsIncome)
+                                                    .Sum(ta => ta.Transaction.Amount);
+        protected decimal Balance => accounts.Where(a => a.UserId == AuthService.UserId).Select(a => a.Balance).Sum() + TotalIncome - TotalExpense;
         protected List<TransactionModel> RecentTransactions =>
             transactions.OrderByDescending(t => t.Date).Take(5).ToList();
 
@@ -41,6 +52,7 @@ namespace BlazorApp.Pages
 
         protected async Task AddTransaction()
         {
+            newTransaction.Date = DateTime.UtcNow;
             await TransactionService.AddTransactionAsync(newTransaction);
             await LoadTransactions();
             showAddModal = false;
@@ -52,6 +64,7 @@ namespace BlazorApp.Pages
         protected override async Task OnInitializedAsync()
         {
             accounts = await AccountService.GetAllAccountsAsync();
+            accounts = accounts.Where(a => a.UserId == AuthService.UserId).ToList();
             categories = await CategoryService.GetAllAsync();
             await LoadTransactions();
             SetupPieChart();
@@ -60,6 +73,13 @@ namespace BlazorApp.Pages
         private async Task LoadTransactions()
         {
             transactions = await TransactionService.GetAllTransactionsAsync();
+            transactions = transactions.Join(accounts,
+                                            t => t.AccountId,
+                                            a => a.AccountId,
+                                            (t, a) => new { Transaction = t, Account = a })
+                                        .Where(ta => ta.Account.UserId == AuthService.UserId)
+                                        .Select(ta => ta.Transaction)
+                                        .ToList();
         }
 
         private async void RadioInputChanged(bool value)

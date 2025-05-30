@@ -40,7 +40,8 @@ namespace BlazorApp.Mappings
                 Amount = model.Amount,
                 Description = model.Description,
                 AccountId = model.AccountId,
-                CategoryId = model.CategoryId
+                CategoryId = model.CategoryId,
+                Date = model.Date
             };
         }
 
@@ -51,7 +52,8 @@ namespace BlazorApp.Mappings
                 Amount = model.Amount,
                 Description = model.Description,
                 AccountId = model.AccountId,
-                CategoryId = model.CategoryId
+                CategoryId = model.CategoryId,
+                Date = model.CreatedAt
             };
         }
     }

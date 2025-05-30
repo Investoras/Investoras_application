@@ -29,7 +29,8 @@ namespace BlazorApp.Pages.Transaction
                     Amount = transaction.Amount,
                     Description = transaction.Description,
                     AccountId = transaction.AccountId,
-                    CategoryId = transaction.CategoryId
+                    CategoryId = transaction.CategoryId,
+                    CreatedAt = transaction.Date
                 };
             }
             else

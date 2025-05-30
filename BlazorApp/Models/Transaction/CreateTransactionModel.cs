@@ -12,6 +12,8 @@ namespace BlazorApp.Models.Transaction
         [StringLength(100, ErrorMessage = "Слишком длинное описание.")]
         public string Description { get; set; }
 
+        public DateTime Date { get; set; }
+
         [Required(ErrorMessage = "Задайте счет.")]
         [Range(0.01, int.MaxValue, ErrorMessage = "Задайте счет.")]
         public int AccountId { get; set; }
