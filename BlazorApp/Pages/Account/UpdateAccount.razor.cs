@@ -13,6 +13,9 @@ namespace BlazorApp.Pages.Account
     {
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private IAccountService AccountService { get; set; } = default!;
+        [Inject] private IAuthService AuthService { get; set; } = default!;
+
+        private int? LoggedUserId { get; set; }
 
         [Parameter]
         public int Id { set; get; }
@@ -20,6 +23,20 @@ namespace BlazorApp.Pages.Account
         public UpdateAccountModel AccountData { set; get; } = new();
         public List<string> ServerErrors { get; set; } = new();
 
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                LoggedUserId = AuthService.GetUserId();
+            }
+            catch
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+        }
+
+        // datetimo is set to default on update for some reason
         protected override async Task OnParametersSetAsync()
         {
             var account = await AccountService.GetByIdAsync(Id);
@@ -29,12 +46,12 @@ namespace BlazorApp.Pages.Account
                 {
                     Name = account?.Name,
                     Balance = account.Balance,
-                    UserId = account.UserId
+                    UserId = (int)LoggedUserId
                 };
             }
             else
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка счета.");
             }
         }
 
@@ -50,12 +67,12 @@ namespace BlazorApp.Pages.Account
                 }
                 else
                 {
-                    ServerErrors.Add("Update error.");
+                    ServerErrors.Add("Ошибка операции.");
                 }
             }
             catch
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка.");
             }
         }
     }

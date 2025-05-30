@@ -3,20 +3,30 @@ using BlazorApp.Models.User;
 using BlazorApp.Mappings;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.JSInterop;
 
 namespace BlazorApp.Services;
 
 public class AuthService : IAuthService
 {
     private readonly HttpClient _httpClient;
+    private readonly IJSRuntime _jsRuntime;
 
     public bool IsAuthenticated { get; private set; }
     public int? UserId { get; private set; }
     public string? Token { get; private set; }
 
-    public AuthService(HttpClient httpClient)
+    public event Action? OnAuthStateChanged;
+
+    public AuthService(HttpClient httpClient, IJSRuntime jsRuntime)
     {
         _httpClient = httpClient;
+        _jsRuntime = jsRuntime;
+    }
+
+    public int GetUserId()
+    {
+        return UserId ?? throw new InvalidOperationException("Пользователь не авторизован.");
     }
 
     public async Task<bool> LoginAsync(LoginUserModel loginModel)
@@ -38,6 +48,10 @@ public class AuthService : IAuthService
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Token);
 
+                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "token", Token);
+                await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "userId", UserId.ToString());
+
+                OnAuthStateChanged?.Invoke();
                 return true;
             }
         }
@@ -45,13 +59,15 @@ public class AuthService : IAuthService
         return false;
     }
 
-    public Task LogoutAsync()
+    public async Task LogoutAsync()
     {
+        OnAuthStateChanged?.Invoke();
         Token = null;
         UserId = null;
         IsAuthenticated = false;
         _httpClient.DefaultRequestHeaders.Authorization = null;
-        return Task.CompletedTask;
+        await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", "token");
+        await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", "userId");
     }
 
     public async Task RegisterAsync(CreateUserModel createUserModel)
@@ -65,7 +81,23 @@ public class AuthService : IAuthService
             var error = await response.Content.ReadAsStringAsync();
             throw new Exception($"Registration failed: {error}");
         }
+    }
 
-        Console.WriteLine("Регистрация успешна");
+    public async Task TryRestoreSessionAsync()
+    {
+        var token = await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "token");
+        var userIdString = await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "userId");
+
+        if (!string.IsNullOrEmpty(token) && int.TryParse(userIdString, out var userId))
+        {
+            Token = token;
+            UserId = userId;
+            IsAuthenticated = true;
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", Token);
+
+            OnAuthStateChanged?.Invoke();
+        }
     }
 }

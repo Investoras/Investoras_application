@@ -14,9 +14,11 @@ namespace BlazorApp.Pages.Authorization
         [Inject] private IAuthService AuthService { get; set; } = default!;
 
         private CreateUserModel RegisterModel = new();
+        private string? registerError;
 
         private async Task HandleRegister()
         {
+            registerError = string.Empty;
             //RegisterModel.CreatedAt = DateTime.UtcNow;
             var response = await Http.PostAsJsonAsync("User", RegisterModel);
 
@@ -26,7 +28,7 @@ namespace BlazorApp.Pages.Authorization
             }
             else
             {
-                // failed ???
+                registerError = "Ошибка регистраии.";
             }
         }
     }

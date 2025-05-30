@@ -4,6 +4,7 @@ using System.Text.Json;
 using BlazorApp.Models.User;
 using ClassLibrary.Dto.User;
 using BlazorApp.Mappings;
+using BlazorApp.Services;
 
 namespace BlazorApp.Pages.User
 {
@@ -11,6 +12,7 @@ namespace BlazorApp.Pages.User
     {
         [Inject] private HttpClient Http { get; set; } = default!;
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] private IAuthService AuthService { get; set; } = default!;
 
         [Parameter] public int Id { get; set; }
 
@@ -19,11 +21,29 @@ namespace BlazorApp.Pages.User
         public List<string> ServerErrors { get; set; } = new();
         public bool IsSubmitting { get; set; } = false;
 
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                Id = AuthService.GetUserId();
+            }
+            catch
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+        }
+
         protected override async Task OnParametersSetAsync()
         {
             try
             {
                 var userDto = await Http.GetFromJsonAsync<UserDto>($"User/{Id}");
+                if (Id != userDto.UserId)
+                {
+                    NavigationManager.NavigateTo("/");
+                    return;
+                } 
                 if (userDto != null)
                 {
                     User = userDto.ToModel();
@@ -32,7 +52,7 @@ namespace BlazorApp.Pages.User
             }
             catch
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка параметров.");
             }
         }
 
@@ -46,16 +66,16 @@ namespace BlazorApp.Pages.User
                 var response = await Http.PutAsJsonAsync($"User/{Id}", UserData.ToDto()); 
                 if (response.IsSuccessStatusCode)
                 {
-                    NavigationManager.NavigateTo("/Users");
+                    NavigationManager.NavigateTo("/Main");
                 }
                 else
                 {
-                    ServerErrors.Add("Update error.");
+                    ServerErrors.Add("Ошибка операции.");
                 }
             }
             catch
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка.");
             }
             finally
             {

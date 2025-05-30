@@ -2,13 +2,13 @@
 
 <div class="row">
 	<div class="col-lg-8">
-		<h1 class="mb-5">New Account</h1>
+		<h1 class="mb-5">Новый счет</h1>
 
 		<EditForm Model="AccountData" OnValidSubmit="SaveAccount">
 			<DataAnnotationsValidator />
 
 			<div class="row mb-3">
-				<label class="col-md-4 col-form-label">Name</label>
+				<label class="col-md-4 col-form-label">Название</label>
 				<div class="col-md-8">
 					<InputText class="form-control" @bind-Value="AccountData.Name" />
 					<ValidationMessage For="@(() => AccountData.Name)" />
@@ -16,18 +16,10 @@
 			</div>
 
 			<div class="row mb-3">
-				<label class="col-md-4 col-form-label">Balance</label>
+				<label class="col-md-4 col-form-label">Баланс</label>
 				<div class="col-md-8">
 					<InputNumber class="form-control" @bind-Value="AccountData.Balance" />
 					<ValidationMessage For="@(() => AccountData.Balance)" />
-				</div>
-			</div>
-
-			<div class="row mb-3">
-				<label class="col-md-4 col-form-label">UserId</label>
-				<div class="col-md-8">
-					<InputNumber class="form-control" @bind-Value="AccountData.UserId" />
-					<ValidationMessage For="@(() => AccountData.UserId)" />
 				</div>
 			</div>
 
@@ -45,11 +37,11 @@
 
 			<div class="row">
 				<div class="offset-md-4 row-cols-md-4 d-grid">
-					<button class="btn btn-primary" @onclick="SaveAccount">Submit</button>
+					<button type="submit" class="btn btn-primary">Создать</button>
 
 				</div>
 				<div class="col-md-4 d-grid">
-					<a class="btn btn-outline-primary" href="/Accounts">Cancel</a>
+					<a class="btn btn-outline-primary" href="/Accounts">Отмена</a>
 				</div>
 			</div>
 

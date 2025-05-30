@@ -17,13 +17,14 @@ namespace BlazorApp.Pages.Authorization
 
         private async Task HandleLogin()
         {
+            loginError = string.Empty;
             if (await AuthService.LoginAsync(loginModel))
             {
-                Navigation.NavigateTo("/Users");
+                Navigation.NavigateTo("/Main");
             }
             else
             {
-                loginError = "Invalid username or password.";
+                loginError = "Неверное имя пользователя или пароль.";
             }
         }
     }

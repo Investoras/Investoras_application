@@ -3,13 +3,13 @@
 
 <div class="row">
 	<div class="col-lg-8">
-		<h1 class="mb-5">Update</h1>
+		<h1 class="mb-5">Обновить категорию</h1>
 
         <EditForm Model="CategoryData" OnValidSubmit="SaveCategory">
             <DataAnnotationsValidator />
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Category Name</label>
+                <label class="col-md-4 col-form-label">Название</label>
                 <div class="col-md-8">
                     <InputText class="form-control" @bind-Value="CategoryData.Name" />
                     <ValidationMessage For="@(() => CategoryData.Name)" />
@@ -17,14 +17,14 @@
             </div>
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Is Income</label>
+                <label class="col-md-4 col-form-label">Доход?</label>
                 <div class="col-md-8">
                     <InputCheckbox class="form-check-input" @bind-Value="CategoryData.IsIncome" />
                 </div>
             </div>
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Description</label>
+                <label class="col-md-4 col-form-label">Описание</label>
                 <div class="col-md-8">
                     <InputText class="form-control" @bind-Value="CategoryData.Description" />
                     <ValidationMessage For="@(() => CategoryData.Description)" />
@@ -45,10 +45,10 @@
 
             <div class="row">
                 <div class="offset-md-4 col-md-4 d-grid">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Обновить</button>
                 </div>
                 <div class="col-md-4 d-grid">
-                    <a class="btn btn-outline-primary" href="/Categories">Cancel</a>
+                    <a class="btn btn-outline-primary" href="/Categories">Отмена</a>
                 </div>
             </div>
         </EditForm>

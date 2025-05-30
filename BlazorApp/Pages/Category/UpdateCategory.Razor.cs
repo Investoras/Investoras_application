@@ -35,7 +35,7 @@ namespace BlazorApp.Pages.Category
             }
             else
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка категории.");
             }
         }
 
@@ -51,12 +51,12 @@ namespace BlazorApp.Pages.Category
                 }
                 else
                 {
-                    ServerErrors.Add("Update error.");
+                    ServerErrors.Add("Ошибка операции.");
                 }
             }
             catch
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка.");
             }
         }
     }

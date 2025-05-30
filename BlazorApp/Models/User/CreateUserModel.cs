@@ -15,7 +15,7 @@ namespace BlazorApp.Models.User
         [Required(ErrorMessage = "Задайте пароль.")]
         [StringLength(20, MinimumLength = 6, ErrorMessage = "Пароль должен содержать не менее 6 символов.")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$",
-            ErrorMessage = "Пароль должен содержать не менее 6 символов, из них хотя бы " +
+            ErrorMessage = "Пароль должен содержать хотя бы " +
             "одну заглавную латинскую букву, цифру и специальные символы @,$,!,%,*,?,&.")]
         public string? Password { get; set; }
     }

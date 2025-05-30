@@ -5,10 +5,10 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <h1 class="mb-5">New Category</h1>
+            <h1 class="mb-5">Новая категория</h1>
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Name</label>
+                <label class="col-md-4 col-form-label">Название</label>
                 <div class="col-md-8">
                     <InputText class="form-control" @bind-Value="CategoryData.Name" />
                     <ValidationMessage For="@(() => CategoryData.Name)" />
@@ -16,14 +16,14 @@
             </div>
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Is Income</label>
+                <label class="col-md-4 col-form-label">Доход?</label>
                 <div class="col-md-8 d-flex align-items-center">
                     <InputCheckbox class="form-check-input me-2" @bind-Value="CategoryData.IsIncome" />
                 </div>
             </div>
 
             <div class="row mb-3">
-                <label class="col-md-4 col-form-label">Description</label>
+                <label class="col-md-4 col-form-label">Описание</label>
                 <div class="col-md-8">
                     <InputText class="form-control" @bind-Value="CategoryData.Description" />
                     <ValidationMessage For="@(() => CategoryData.Description)" />
@@ -44,10 +44,10 @@
 
             <div class="row">
                 <div class="offset-md-4 col-md-4 d-grid">
-                    <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Submit</button>
+                    <button class="btn btn-primary" type="submit" disabled="@IsSubmitting">Создать</button>
                 </div>
                 <div class="col-md-4 d-grid">
-                    <a class="btn btn-outline-primary" href="/Categories">Cancel</a>
+                    <a class="btn btn-outline-primary" href="/Categories">Отмена</a>
                 </div>
             </div>
         </div>

@@ -16,4 +16,9 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+var authService = host.Services.GetRequiredService<IAuthService>();
+await authService.TryRestoreSessionAsync();
+
+await host.RunAsync();

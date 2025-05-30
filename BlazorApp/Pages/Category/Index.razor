@@ -1,23 +1,23 @@
 ﻿@page "/Categories"
 
 
-<h1 class="text-center mb-3">List of Categories</h1>
-<a class="btn btn-primary mb-3" href="/Categories/AddCategory">New Category</a>
+<h1 class="text-center mb-3">Список категорий</h1>
+<a class="btn btn-primary mb-3" href="/Categories/AddCategory">Новая категория</a>
 
 @if (Categories == null)
 {
-    <p><em>Loading ...</em></p>
+    <p><em>Загрузка ...</em></p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>CategoryId</th>
-                <th>Name</th>
-                <th>IsIncome</th>
-                <th>Description</th>
-                <th>Action</th>
+                <th>Id Категории</th>
+                <th>Название</th>
+                <th>Доход?</th>
+                <th>Описание</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -29,11 +29,28 @@ else
                     <td>@Category.IsIncome</td>
                     <td>@Category.Description</td>
                     <td style="white-space:nowrap">
-                        <a class="btn btn-primary btn-sm" href="/Categories/UpdateCategory/@Category.CategoryId">Update</a>
-                        <a class="btn btn-danger btn-sm" href="/Categories/DeleteCategory/@Category.CategoryId">Delete</a>
+                        <a class="btn btn-primary btn-sm" href="/Categories/UpdateCategory/@Category.CategoryId">Обновить</a>
+                        <a class="btn btn-danger btn-sm" @onclick="() => ShowDeleteModal(Category.CategoryId)">Удалить</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 }
+
+
+@if (showDeleteModal)
+{
+    <div class="modal">
+        <div class="modal-content">
+            <h3>Удалить категорию</h3>
+            <p>Подтвердите удаление категории с Id @Id</p>
+
+            <div class="modal-actions">
+                <button class="btn btn-danger" @onclick="HandleDelete">Удалить</button>
+                <button class="btn btn-secondary" @onclick="HideDeleteModal">Отмена</button>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,24 +1,23 @@
 ﻿@page "/Accounts"
 
 
-<h1 class="text-center mb-3">List of Accounts</h1>
-<a class="btn btn-primary mb-3" href="/Accounts/AddAccount">New Account</a>
+<h1 class="text-center mb-3">Список счетов</h1>
+<a class="btn btn-primary mb-3" href="/Accounts/AddAccount">Новый счет</a>
 
 @if (accounts == null)
 {
-    <p><em>Loading ...</em></p>
+    <p><em>Загрузка ...</em></p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>AccountId</th>
-                <th>Name</th>
-                <th>Balance</th>
-                <th>UserId</th>
-                <th>CreatedAt</th>
-                <th>Action</th>
+                <th>Id Счета</th>
+                <th>Название</th>
+                <th>Баланс</th>
+                <th>Создано</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -28,14 +27,29 @@ else
                     <td>@account.AccountId</td>
                     <td>@account.Name</td>
                     <td>@account.Balance</td>
-                    <td>@account.UserId</td>
                     <td>@account.CreatedAt</td>
                     <td style="white-space:nowrap">
-                        <a class="btn btn-primary btn-sm" href="/Accounts/UpdateAccount/@account.AccountId">Update</a>
-                        <a class="btn btn-danger btn-sm" href="/Accounts/DeleteAccount/@account.AccountId">Delete</a>
+                        <a class="btn btn-primary btn-sm" href="/Accounts/UpdateAccount/@account.AccountId">Обновить</a>
+                        <a class="btn btn-danger btn-sm" @onclick="() => ShowDeleteModal(account.AccountId)">Удалить</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+
+@if (showDeleteModal)
+{
+    <div class="modal">
+        <div class="modal-content">
+            <h3>Удалить счет</h3>
+            <p>Подтвердите удаление счета с Id @Id</p>
+
+            <div class="modal-actions">
+                <button class="btn btn-danger" @onclick="Delete_Account">Удалить</button>
+                <button class="btn btn-secondary" @onclick="HideDeleteModal">Отмена</button>
+            </div>
+        </div>
+    </div>
 }

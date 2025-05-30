@@ -11,14 +11,30 @@ namespace BlazorApp.Pages.Account
     {
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private IAccountService AccountService { get; set; } = default!;
+        [Inject] private IAuthService AuthService { get; set; } = default!;
 
-        public List<string> ServerErrors { get; set; } = new();
-        public CreateAccountModel AccountData { get; set; } = new();
+        private int? UserId { get; set; }
+        protected List<string> ServerErrors { get; set; } = new();
+        protected CreateAccountModel AccountData { get; set; } = new();
+
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                UserId = AuthService.GetUserId();
+            }
+            catch
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+        }
 
         protected async Task SaveAccount()
         {
             try
             {
+                AccountData.UserId = (int)UserId;
                 var response = await AccountService.AddAccountAsync(AccountData);
                 if (response.IsSuccessStatusCode)
                 {
@@ -26,12 +42,12 @@ namespace BlazorApp.Pages.Account
                 }
                 else
                 {
-                    ServerErrors.Add("Account error.");
+                    ServerErrors.Add("Ошибка операции.");
                 }
             }
             catch
             {
-                ServerErrors.Add("Account error.");
+                ServerErrors.Add("Ошибка.");
             }
         }
 

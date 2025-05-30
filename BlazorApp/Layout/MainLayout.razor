@@ -9,6 +9,7 @@
         <div class="top-row px-4">
             @if (AuthService.IsAuthenticated)
             {
+                <button @onclick="GoSettings">Настройка аккаунта</button>
                 <a href="#" @onclick="Logout">Выйти</a>
             }
             else
