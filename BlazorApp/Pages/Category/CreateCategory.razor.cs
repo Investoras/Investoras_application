@@ -44,7 +44,7 @@ namespace BlazorApp.Pages.Category
                 }
                 else
                 {
-                    ServerErrors.Add("Ошибка операции.");
+                    ServerErrors.Add("Ошибка операции: проверьте правильность введённых данных.");
                 }
             }
             catch

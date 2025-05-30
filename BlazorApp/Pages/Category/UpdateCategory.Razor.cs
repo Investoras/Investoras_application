@@ -35,7 +35,7 @@ namespace BlazorApp.Pages.Category
             }
             else
             {
-                ServerErrors.Add("Ошибка категории.");
+                ServerErrors.Add("Ошибка категории: проверьте правильность введённых данных.");
             }
         }
 

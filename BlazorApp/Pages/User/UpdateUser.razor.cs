@@ -52,7 +52,7 @@ namespace BlazorApp.Pages.User
             }
             catch
             {
-                ServerErrors.Add("Ошибка параметров.");
+                ServerErrors.Add("Ошибка параметров: проверьте правильность введённых данных.");
             }
         }
 

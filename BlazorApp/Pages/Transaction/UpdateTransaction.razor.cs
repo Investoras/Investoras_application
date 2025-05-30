@@ -17,6 +17,13 @@ namespace BlazorApp.Pages.Transaction
         public bool IsSubmitting { get; set; } = false;
         public UpdateTransactionModel TransactionData { get; set; } = new();
         public List<string> ServerErrors { get; set; } = new();
+        public DateTime TransactionDateLocal
+        {
+            get => TransactionData.CreatedAt.Kind == DateTimeKind.Utc
+                ? TransactionData.CreatedAt.ToLocalTime()
+                : TransactionData.CreatedAt;
+            set => TransactionData.CreatedAt = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
 
         protected override async Task OnParametersSetAsync()
         {
@@ -30,12 +37,14 @@ namespace BlazorApp.Pages.Transaction
                     Description = transaction.Description,
                     AccountId = transaction.AccountId,
                     CategoryId = transaction.CategoryId,
-                    CreatedAt = transaction.Date
+                    CreatedAt = transaction.Date.Kind == DateTimeKind.Utc
+                            ? transaction.Date
+                            : DateTime.SpecifyKind(transaction.Date, DateTimeKind.Utc)
                 };
             }
             else
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка обновления: проверьте правильность введённых данных.");
             }
 
             IsLoading = false;
@@ -51,9 +60,9 @@ namespace BlazorApp.Pages.Transaction
                 await TransactionService.UpdateTransactionAsync(Id, TransactionData);
                 NavigationManager.NavigateTo("/Transactions");
             }
-            catch
+            catch (Exception ex)
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add($"Ошибка обновления. {ex}");
             }
             finally
             {

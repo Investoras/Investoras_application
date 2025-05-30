@@ -47,6 +47,14 @@
                     </div>
                 </div>
 
+                <div class="row mb-3">
+                    <label class="col-md-4 col-form-label">Категория</label>
+                    <div class="col-md-8">
+                        <InputDate class="form-control" @bind-Value="TransactionDateLocal" @bind-Value:format="yyyy-MM-dd"></InputDate>
+                        <ValidationMessage For="@(() => TransactionData.CreatedAt)" />
+                    </div>
+                </div>
+
                 @if (ServerErrors?.Count > 0)
                 {
                     <div class="alert alert-danger">

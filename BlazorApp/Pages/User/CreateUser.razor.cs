@@ -55,12 +55,12 @@ namespace BlazorApp.Pages.User
                 }
                 else
                 {
-                    ServerErrors.Add("Update error.");
+                    ServerErrors.Add("Проверьте правильность введённых данных.");
                 }
             }
             catch
             {
-                ServerErrors.Add("Update error.");
+                ServerErrors.Add("Ошибка операции.");
             }
             finally
             {
