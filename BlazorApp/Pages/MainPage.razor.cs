@@ -23,10 +23,12 @@ namespace BlazorApp.Pages
 
         protected List<TransactionModel> transactions = new();
         protected List<CategoryModel> categories = new();
+        protected List<CategoryModel> filteredCategories = new();
         protected List<AccountModel> accounts = new();
         protected CreateTransactionModel newTransaction = new();
         protected bool showAddModal = false;
         protected bool isIncomeSelected = false;
+        protected string selectedTransactionType = "";
         protected Chart? _pieChart;
         protected PieConfig? _pieConfig;
 
@@ -49,7 +51,8 @@ namespace BlazorApp.Pages
 
         protected void ShowAddTransactionModal() => (showAddModal, newTransaction) = (true, new CreateTransactionModel { });
         protected void HideAddTransactionModal() => showAddModal = false;
-
+        protected bool HasChartData => transactions.Any(t => t.IsIncome == isIncomeSelected && t.Date.Month == DateTime.Now.Month);
+        protected string CurrentMonthName => new CultureInfo("ru-RU").DateTimeFormat.GetMonthName(DateTime.Now.Month);
         protected async Task AddTransaction()
         {
             newTransaction.Date = DateTime.UtcNow;
@@ -58,7 +61,11 @@ namespace BlazorApp.Pages
             showAddModal = false;
             newTransaction = new CreateTransactionModel();
             UpdatePieChart();
-            await _pieChart.Update();
+            if (_pieChart != null && HasChartData)
+            {
+                await _pieChart.Update();
+            }
+            selectedTransactionType = "";
         }
 
         protected override async Task OnInitializedAsync()
@@ -85,10 +92,21 @@ namespace BlazorApp.Pages
         private async void RadioInputChanged(bool value)
         {
             isIncomeSelected = value;
+
             UpdatePieChart();
-            await _pieChart.Update();
+            if (_pieChart != null && HasChartData)
+            {
+                await _pieChart.Update();
+            }
         }
 
+        private void OnTransactionTypeChanged(ChangeEventArgs e)
+        {
+            selectedTransactionType = e.Value?.ToString() ?? "";
+            isIncomeSelected = selectedTransactionType == "income";
+            filteredCategories = new List<CategoryModel>();
+            filteredCategories = categories.Where(c => c.IsIncome == isIncomeSelected).ToList();
+        }
         private string HsvToRgbString(double h, double s, double v)
         {
             double c = v * s;
@@ -127,28 +145,36 @@ namespace BlazorApp.Pages
 
         private void UpdatePieChart()
         {
-            var transactionsByCategories = transactions.
-                Where(t => isIncomeSelected == t.IsIncome && t.Date.Month == DateTime.Now.Month).
-                GroupBy(t => t.CategoryId).
-                Select(g => new
+            if (_pieConfig == null)
+                return;
+
+            var transactionsByCategories = transactions
+                .Where(t => isIncomeSelected == t.IsIncome && t.Date.Month == DateTime.Now.Month)
+                .GroupBy(t => t.CategoryId)
+                .Select(g => new
                 {
                     Category = g.Key,
                     Total = g.Sum(t => t.Amount)
-                }).
-                ToList();
+                })
+                .ToList();
+
+            _pieConfig.Data.Labels.Clear();
+            _pieConfig.Data.Datasets.Clear();
+            _pieConfig.Options.Title.Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {CurrentMonthName}";
+
+            if (!transactionsByCategories.Any())
+                return;
 
             List<string> colorHexCodes = new List<string>();
-            int categoriesCount = categories.Count;
             const double golden_ratio_conjugate = 0.618033988749895;
             Random random = new();
             double h = random.NextDouble();
 
-            _pieConfig.Data.Labels.Clear();
-            _pieConfig.Data.Datasets.Clear();
+            filteredCategories = categories
+                .Where(c => transactionsByCategories.Any(tc => tc.Category == c.CategoryId))
+                .ToList();
 
-            var filteredCatrgories = categories.Where(c => transactionsByCategories.Any(tc => tc.Category == c.CategoryId)).ToList();
-
-            foreach (var category in filteredCatrgories)
+            foreach (var category in filteredCategories)
             {
                 _pieConfig.Data.Labels.Add(category.Name);
                 h += golden_ratio_conjugate;
@@ -156,16 +182,14 @@ namespace BlazorApp.Pages
                 colorHexCodes.Add(HsvToRgbString(h * 360, 0.7, 0.99));
             }
 
-            PieDataset<decimal> dataset = new PieDataset<decimal>(transactionsByCategories.
-                Select(g => g.Total).ToList())
+            var dataset = new PieDataset<decimal>(transactionsByCategories.Select(g => g.Total).ToList())
             {
                 BackgroundColor = colorHexCodes.ToArray()
             };
 
-            _pieConfig.Options.Title.Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {new CultureInfo("ru-RU").DateTimeFormat.GetMonthName(DateTime.Now.Month)}";
-
             _pieConfig.Data.Datasets.Add(dataset);
         }
+
 
         private void SetupPieChart()
         {
@@ -177,7 +201,7 @@ namespace BlazorApp.Pages
                     Title = new OptionsTitle
                     {
                         Display = true,
-                        Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {new CultureInfo("ru-RU").DateTimeFormat.GetMonthName(DateTime.Now.Month)}",
+                        Text = $"{(isIncomeSelected ? "Доходы" : "Расходы")} за {CurrentMonthName}",
                         FontSize = 18
                     },
                 }

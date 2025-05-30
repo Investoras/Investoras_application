@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\js\chart-no-data-plugin.js" />
+  </ItemGroup>
+
 </Project>
