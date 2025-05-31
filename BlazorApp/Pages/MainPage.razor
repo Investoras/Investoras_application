@@ -5,115 +5,104 @@
 @using ChartJs.Blazor.Util
 
 <div class="app-container">
-    <div style="display: flex; width: 100%; margin: 0; padding: 0;">
-        <div class="left" style="flex: 1; border: 1px solid black;">
-            <button class="add-button" @onclick="ShowAddTransactionModal" style="width: 100%; margin-bottom: 50px;">
+    <div class="layout-columns">
+        <!-- Left -->
+        <div class="column-left">
+            <button class="add-button full-width mb-50" @onclick="ShowAddTransactionModal">
                 Добавить запись
             </button>
 
-            <div class="summary-card income" style="width: 100%; margin-bottom: 50px;">
+            <div class="summary-card income">
                 <h3>Сводка (Доходы)</h3>
                 <p class="amount">@TotalIncome.ToString("C", CultureInfo.CurrentCulture)</p>
             </div>
 
-            <div class="summary-card expense" style="width: 100%; margin-bottom: 50px;">
+            <div class="summary-card expense">
                 <h3>Сводка (Расходы)</h3>
                 <p class="amount">@TotalExpense.ToString("C", CultureInfo.CurrentCulture)</p>
             </div>
 
-            <div class="summary-card balance" style="width: 100%; margin-bottom: 50px;">
+            <div class="summary-card balance">
                 <h3>Сводка (Баланс)</h3>
                 <p class="amount">@Balance.ToString("C", CultureInfo.CurrentCulture)</p>
             </div>
         </div>
 
-        <div class="content" style="flex: 2; border: 1px solid black;">
-            <h1 class="app-title" style="text-align: center;">Ваша статистика</h1>
+        <!-- Center -->
+        <div class="column-content">
+            <h1 class="app-title text-center">Ваша статистика</h1>
 
             <div class="chart-section">
-                <div style="text-align:center; width:100%">
-                    <div class="date-navigator" style="text-align: center; margin-bottom: 20px;">
-                        <button @onclick="PreviousMonth" style="padding: 5px 10px; margin-right: 10px;">◀</button>
-                        <span style="font-size: 18px; font-weight: bold; margin: 0 15px;">
-                            @SelectedMonthName @SelectedYear
-                        </span>
-                        <button @onclick="NextMonth" style="padding: 5px 10px; margin-left: 10px;">▶</button>
+                <div class="date-navigator">
+                    <button @onclick="PreviousMonth">◀</button>
+                    <span>@SelectedMonthName @SelectedYear</span>
+                    <button @onclick="NextMonth">▶</button>
+                </div>
+
+                <div class="text-center">
+                    <div class="radio-group">
+                        <input type="radio" id="income" name="graph_type" value="income"
+                               checked="@isIncomeSelected"
+                               @onchange="@(() => RadioInputChanged(true))" />
+                        <label for="income">Доходы</label>
                     </div>
-                    <div style="display:inline-block">
-                        <input type="radio" id="income"
-                        name="graph_type"
-                        value="income"
-                        checked="@(isIncomeSelected)"
-                        @onchange="@(() => RadioInputChanged(true))">
-                        <label for="income" style="margin-right:20px;">Доходы</label>
-                    </div>
-                    <div style="display:inline-block">
-                        <input type="radio"
-                        id="expense"
-                        name="graph_type"
-                        value="expense"
-                        checked="@(!isIncomeSelected)"
-                        @onchange="@(() => RadioInputChanged(false))">
+
+                    <div class="radio-group">
+                        <input type="radio" id="expense" name="graph_type" value="expense"
+                               checked="@(!isIncomeSelected)"
+                               @onchange="@(() => RadioInputChanged(false))" />
                         <label for="expense">Расходы</label>
                     </div>
                 </div>
-                <div class="chart-container" style="text-align: center;">
+
+                <div class="chart-container">
                     @if (_pieConfig != null)
                     {
-                        <Chart Width="400"
-                        Height="200"
-                        Config="_pieConfig"
-                        @ref="_pieChart">
-                        </Chart>
+                        <Chart Width="400" Height="200" Config="_pieConfig" @ref="_pieChart" />
                     }
                     else if (!HasChartData)
                     {
-                        <div style="padding: 50px; text-align: center;">
-                            <p>Нет данных для отображения за выбранную дату.</p>
-                        </div>
+                        <p class="text-center">Нет данных для отображения за выбранную дату.</p>
                     }
                     else
                     {
-                        <div style="padding: 50px;">
-                            <p>Загрузка...</p>
-                            <canvas width="400" height="200"></canvas>
-                        </div>
+                        <p class="text-center">Загрузка...</p>
+                        <canvas style="width: 100%; height: auto;"></canvas>
                     }
-                    
                 </div>
-
             </div>
         </div>
 
-        <div class="right" style="flex: 1; border: 1px solid black;">
-            <div class="user-info" style="text-align: center;">
-                @if(AuthService.Username != null)
-				{
-					<span class="username">Добро пожаловать, @AuthService.Username!</span>
-				}
-				else
-				{
-					<span class="username">Добро пожаловать, гость!</span>
-				}
+        <!-- Right -->
+        <div class="column-right">
+            <div class="user-info text-center">
+                @if (AuthService.Username != null)
+                {
+                    <span class="username">Добро пожаловать, @AuthService.Username!</span>
+                }
+                else
+                {
+                    <span class="username">Добро пожаловать, гость!</span>
+                }
             </div>
 
             <div class="transactions-section">
-                <div class="recent-transactions" style="margin-bottom: 50px;">
+                <div class="recent-transactions">
                     <h2>Список последних транзакций</h2>
                     <ul class="transaction-list">
                         @foreach (var transaction in RecentTransactions)
                         {
-                            <li class="transaction-item @(transaction.IsIncome ? "income" : "expense")" style="margin-bottom: 10px;">
+                            <li class="transaction-item @(transaction.IsIncome ? "income" : "expense")">
                                 <span class="description">@transaction.Description</span>
                                 <span class="amount">@transaction.Amount.ToString("C", CultureInfo.CurrentCulture)</span>
                                 <span class="date">@transaction.Date.ToShortDateString()</span>
                             </li>
                         }
                     </ul>
+                </div>
 
-                    <div class="full-history">
-                        <a class="btn btn-primary btn-sm" style="width: 100%;" href="/Transactions">История транзакций</a>
-                    </div>
+                <div class="full-history">
+                    <a class="btn btn-primary full-width" href="/Transactions">История транзакций</a>
                 </div>
             </div>
         </div>
@@ -177,8 +166,8 @@
                 </div>
 
                 <div class="modal-actions">
-                    <button type="submit">Добавить</button>
-                    <button type="button" @onclick="HideAddTransactionModal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="button" class="btn btn-secondary" @onclick="HideAddTransactionModal">Отмена</button>
                 </div>
             </EditForm>
         </div>
